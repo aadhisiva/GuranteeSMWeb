@@ -20,6 +20,7 @@ module.exports = {
   entry: path.join(__dirname, "src", "index.tsx"),
   output: {
     publicPath: "/GuaranteeSWeb/",
+    // publicPath: "/",
     path: path.resolve(__dirname, "build"),
   },
   resolve: {
@@ -29,16 +30,14 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": JSON.stringify(dotenv.parsed),
     }),
-    // new webpack.DefinePlugin({
-    //   BASENAME: JSON.stringify("/waterShed"),
-    // }),
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "index.html"),
     }),
   ],
   devServer: {
-    port: 9000,
+    // port: 9000,
+    // https: true,
     historyApiFallback: true, // It prevents the reload issue and direct searching by paths.
   },
   performance: {

@@ -24,7 +24,7 @@ const handleClickLogout = () => {
 }
     return (
     <div className="flex flex-row">
-       <div className="h-[calc(100vh-88px)] sticky top-12 overflow-hidden">
+       <div className="h-[calc(100vh-88px)] sticky top-12">
           <CDBSidebar
             textColor="#fff"
             backgroundColor="#475569"

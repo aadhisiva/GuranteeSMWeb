@@ -11,7 +11,6 @@ import { userLoggedOut } from "../redux/actions/userAction";
 
 export default function WebRoutes() {
   const [{ isLoggedIn, timeoutId }] = IsAuthenticated();
-const dispatch = useDispatch();
 
   return (
     <React.Suspense  fallback={<div>....Loading</div>}>

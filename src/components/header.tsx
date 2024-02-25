@@ -14,9 +14,9 @@ export default function Header() {
           />
         </Col>
         <Col className="text-center font-bold text-white text-2xl">
-          Guarantee Scheme
+          Guarantee Scheme Survey
         </Col>
-        <Col className=" flex justify-end text-right">
+        <Col className="flex justify-end text-right">
           <Image
             // className="right-0"
             width={50}

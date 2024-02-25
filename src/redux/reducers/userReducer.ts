@@ -7,7 +7,9 @@ const initialState = {
     timeoutId : null,
     Otp : null,
     Mobile: "",
-    Role: ""
+    Role: "",
+    loginCode: "",
+    loginRole: ""
 };
 
 export const userReducers = (state = initialState, action: any) => {
@@ -16,7 +18,7 @@ export const userReducers = (state = initialState, action: any) => {
         case SET_TIMEOUT_ID:
             return { ...state, timeoutId: payload };
         case LOGGED_IN:
-            return { ...state, Otp: payload.otp, Role: payload.Role, Mobile: payload.Mobile };
+            return { ...state, Otp: payload.Otp, Role: payload.Role, Mobile: payload.Mobile, loginCode: payload?.loginCode, loginRole: payload?.loginRole };
         case LOGGED_OUT:
             return { ...state, isLoggedIn: false, Otp: null, Role: "", Mobile: "" };
         case OTP_VERIFY:

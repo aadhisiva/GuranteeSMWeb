@@ -9,13 +9,14 @@ function TextInputWithLabel({
   controlId,
   maxLength,
   disabled,
+  type
 }: ITextInput) {
   return (
     <Form.Group as={Col} md="12" controlId={controlId}>
       <Form.Label>{placeholder}</Form.Label>
       <Form.Control
         required
-        type="text"
+        type={type ? type: 'text'}
         name={name}
         placeholder={placeholder}
         value={value}

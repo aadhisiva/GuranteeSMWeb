@@ -15,3 +15,50 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.boxTitle {
+  display: flex;
+  margin-left: 3rem;
+  margin-top: 1rem;
+}
+
+.boxText {
+  border: 1px solid;
+  width: auto;
+  padding: 5px;
+  background-color: #000000;
+  color: #FFFFFF;
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
+}
+
+.box {
+  display: flex;
+  border: 1.5px solid;
+  justify-content: space-around;
+  border-color: grey;
+  border-radius: 0 10px 10px 10px;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  padding: 0.5rem;
+}
+
+.float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #0C9;
+  color: #FFF;
+  border-radius: 50px;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  box-shadow: 2px 2px 3px #999;
+}
+
+.my-float {
+  margin-top: 22px;
+}

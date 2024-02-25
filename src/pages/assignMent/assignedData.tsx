@@ -8,6 +8,7 @@ import CustomPagination from "../../components/common/customPagination";
 import { IMasterData } from "../../utilities/interfacesOrtype";
 import ModalFormEdit from "../../components/common/modalFormEdit";
 import Titlebar from "../../components/common/titlebar";
+import LoaderOverlay from "../../components/common/LoadingOverlay";
 
 export default function AssignedData() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
@@ -259,59 +260,61 @@ export default function AssignedData() {
           />
         </Col>
       </Row> */}
-      <Row className="pt-3 m-3">
+      <Row className="pt-3 pb-3 m-3">
         <Col>
           {/* Replace the GridView with a React-based table */}
           {originalData.length !== 0 ? (
-            <Table striped responsive bordered>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Mobile</th>
-                  <th>Role</th>
-                  <th>Type</th>
-                  <th>DistrictName</th>
-                  <th>TalukOrTownName</th>
-                  <th>HobliOrZoneName</th>
-                  <th>PHCName</th>
-                  <th>SubCenterName</th>
-                  <th>CreatedBy</th>
-                  <th>CreatedMobile</th>
-                  <th>Modify</th>
-                  {/* <th>Assign</th> */}
-                </tr>
-              </thead>
-              <tbody className="overflow-x-scroll">
-                {(currentItems || []).map((obj: any, index) => (
-                  <tr key={index}>
-                    <td>{obj?.Name}</td>
-                    <td>{obj?.Mobile}</td>
-                    <td>{obj?.Role}</td>
-                    <td>{obj?.Type}</td>
-                    <td>{obj?.DistrictName}</td>
-                    <td>{obj?.TalukOrTownName}</td>
-                    <td>{obj?.HobliOrZoneName}</td>
-                    <td>{obj?.PHCName}</td>
-                    <td>{obj?.SubCenterName}</td>
-                    <td>{obj?.CreatedBy}</td>
-                    <td>{obj?.CreatedMobile}</td>
-                    <td>
-                      <Button
-                        variant="primary"
-                        onClick={() => handleCLickAssign(obj)}
-                      >
-                        Modify
-                      </Button>
-                    </td>
+            <React.Fragment>
+              <Table striped responsive bordered>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>DistrictName</th>
+                    <th>TalukOrTownName</th>
+                    <th>HobliOrZoneName</th>
+                    <th>PHCName</th>
+                    <th>SubCenterName</th>
+                    <th>CreatedBy</th>
+                    <th>CreatedMobile</th>
+                    <th>Modify</th>
+                    {/* <th>Assign</th> */}
                   </tr>
-                ))}
-              </tbody>
-                <CustomPagination
-                  totalPages={totalPages}
-                  currentPage={currentPage}
-                  onPageChange={onPageChange}
-                />
-            </Table>
+                </thead>
+                <tbody className="overflow-x-scroll">
+                  {(currentItems || []).map((obj: any, index) => (
+                    <tr key={index}>
+                      <td>{obj?.Name}</td>
+                      <td>{obj?.Mobile}</td>
+                      <td>{obj?.Role}</td>
+                      <td>{obj?.Type}</td>
+                      <td>{obj?.DistrictName}</td>
+                      <td>{obj?.TalukOrTownName}</td>
+                      <td>{obj?.HobliOrZoneName}</td>
+                      <td>{obj?.PHCName}</td>
+                      <td>{obj?.SubCenterName}</td>
+                      <td>{obj?.CreatedBy}</td>
+                      <td>{obj?.CreatedMobile}</td>
+                      <td>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleCLickAssign(obj)}
+                        >
+                          Modify
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              <CustomPagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={onPageChange}
+              />
+            </React.Fragment>
           ) : (
             ""
           )}
@@ -322,8 +325,8 @@ export default function AssignedData() {
 
   return (
     <div>
-      {isLoading && <Spinner />}
-      {!isLoading && renderComponent()}
+       <LoaderOverlay isLoading={isLoading} />
+      {renderComponent()}
     </div>
   );
 }

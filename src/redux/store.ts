@@ -4,7 +4,6 @@ import { configureStore  } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Choose your storage engine
 import timeoutMiddleware from '../utilities/middleware/timeoutMiddleware';
-import { RootState } from '../utilities/reducersTypes';
 import rootReducers from './reducers/rootReducers'; // Import your root reducer
 
 const persistConfig = {

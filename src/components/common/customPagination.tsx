@@ -15,6 +15,7 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }:any ) => {
     };
   
     return (
+      <div className="flex justify-center items-center -z-1">
       <Pagination>
         <Pagination.First onClick={() => onPageChange(1)} />
         <Pagination.Prev onClick={() => onPageChange(currentPage - 1)} />
@@ -22,6 +23,7 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }:any ) => {
         <Pagination.Next onClick={() => onPageChange(currentPage + 1)} />
         <Pagination.Last onClick={() => onPageChange(totalPages)} />
       </Pagination>
+      </div>
     );
   };
   

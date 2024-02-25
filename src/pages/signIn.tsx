@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { DASHBOARD } from "../utilities/routePaths";
-import { Button, Card, Form, Row, Col } from "react-bootstrap";
+import { Button, Card, Form, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { otpVerification, userLoggedIn } from "../redux/actions/userAction";
 import SelectInput from "../components/common/selectInput";
@@ -9,6 +7,8 @@ import TextInput from "../components/common/textInput";
 import { postRequest } from "../Authentication/axiosrequest";
 import { IsAuthenticated } from "../Authentication/useAuth";
 import { CustomCaptch } from "../components/cutomCaptch";
+import { LOGIN_ROLES } from "../utilities/constants";
+import "./dashboard.css";
 
 export default function SignIn({ auth }: any) {
   const [validated, setValidated] = useState(false);
@@ -19,7 +19,7 @@ export default function SignIn({ auth }: any) {
   const [isOtpValidate, setIsOtpValidate] = useState(false);
 
   const [captch, setFreshCaptch] = useState("");
-    const [captchValue, setCaptchaValue] = useState('');
+  const [captchValue, setCaptchaValue] = useState("");
 
   const dispatch = useDispatch();
 
@@ -28,17 +28,18 @@ export default function SignIn({ auth }: any) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (!Mobile) return alert("Enter UserName");
-    if (!Role) return alert("Enter UserName");
+    if (!Mobile) return alert("Enter Mobile");
+    if (!Role) return alert("Select Role");
     // if (!Otp) return alert("Enter Password");
     if (form.checkValidity() === true) {
       event.stopPropagation();
       let res = await postRequest("webLogin", { Role, Mobile });
+
       if (res.code === 200) {
         setIsOtpValidate(true);
         dispatch(userLoggedIn(res?.data));
       } else {
-        alert("Something Went Wrong Please try again.");
+        alert(res?.response?.data?.message || "Please try again.");
       }
     }
     setValidated(true);
@@ -49,11 +50,13 @@ export default function SignIn({ auth }: any) {
     if (form.checkValidity() === true) {
       event.stopPropagation();
       if (!OtpNo) return alert("Provide Otp.");
-      console.log("captch",captch)
+
       let originalCaptcha = captch.split(" ").join("");
-      if(captchValue.length !== 6) return alert("Please Enter Correct Captha.")
+      if (captchValue.length !== 6)
+        return alert("Please Enter Correct Captcha.");
       // captch checking here
-      if (originalCaptcha !== captchValue) return alert("Captha Failed. Please Try Again");
+      if (originalCaptcha !== captchValue)
+        return alert("Captcha Failed. Please Try Again");
       let check = OtpNo === Otp;
       if (!check) return alert("Otp Verification Failed.");
 
@@ -63,6 +66,9 @@ export default function SignIn({ auth }: any) {
   };
   return (
     <div className="flex mt-8 justify-center items-center">
+      <a className="float">
+        <i className="my-float">1.0.0</i>
+      </a>
       <Card className="text-center pb-5">
         {!isOtpValidate ? (
           <Form
@@ -75,8 +81,9 @@ export default function SignIn({ auth }: any) {
               <span className="pb-2 text-center font-bold">Login</span>
               <SelectInput
                 defaultSelect={"Select Role"}
-                options={["Super Admin"]}
+                options={LOGIN_ROLES}
                 value={Role}
+                isValueAdded={true}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setRole(e.target.value)
                 }
@@ -105,7 +112,8 @@ export default function SignIn({ auth }: any) {
               <span className="pb-2 text-center font-bold">Login</span>
               <SelectInput
                 defaultSelect={"Select Role"}
-                options={["Super Admin"]}
+                isValueAdded={true}
+                options={LOGIN_ROLES}
                 value={Role}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setRole(e.target.value)
@@ -131,7 +139,12 @@ export default function SignIn({ auth }: any) {
                   setOtpNo(e.target.value)
                 }
               />
-              <CustomCaptch setFreshCaptch={setFreshCaptch} setCaptchaValue={setCaptchaValue} captch={captch} captchValue={captchValue} />
+              <CustomCaptch
+                setFreshCaptch={setFreshCaptch}
+                setCaptchaValue={setCaptchaValue}
+                captch={captch}
+                captchValue={captchValue}
+              />
             </Row>
             <Button type="submit">Submit</Button>
           </Form>

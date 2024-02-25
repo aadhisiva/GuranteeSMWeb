@@ -9,42 +9,38 @@ import TextInputWithLabel from "./textInputWithLabel";
 import SelectInputWithLabel from "./selectInputWithLabel";
 import { IsAuthenticated } from "../../Authentication/useAuth";
 
-export default function ModalFormEdit({
+export default function DistrictModal({
   show,
   title,
   onHide,
   handleSubmitForm,
-  saveType,
+  handleModifyAssignedUser,
   formData,
+  saveType
 }: IModalFromEdit) {
   const [validated, setValidated] = useState(false);
-
   const [stateData, setStateData] = useState({
     Name: "",
     Role: "",
     Mobile: "",
     ...formData,
   });
-
-  const [{ loginRole, Mobile }] = IsAuthenticated();
+  const [{ Role, loginRole, Mobile }] = IsAuthenticated();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === true) {
-      event.stopPropagation();
         let forApiBody = {
           Name: stateData.Name,
           Mobile: stateData.Mobile,
-          Role: stateData.Role,
           type: saveType,
-          SubCenterCode: stateData.SubCenterCode,
-          Type: stateData?.Type,
+          Role: stateData?.Role,
+          DistrictCode: stateData?.DistrictCode,
           CreatedBy: loginRole,
-          CreatedMobile: Mobile,
-          UserId: stateData?.UserId
+          CreatedMobile: Mobile
         };
-        handleSubmitForm(forApiBody);
+        handleModifyAssignedUser(forApiBody);
     };
     setValidated(true);
   };
@@ -60,23 +56,7 @@ export default function ModalFormEdit({
   }
 
   const renderRoles = () => {
-    if(loginRole === "WCD-DD" || loginRole === "CDPO" || loginRole === "SuperVisor"){
-      return [{role: "AWW", valule: "AWW"}];
-    } else if(loginRole === "DHO" || loginRole === "THO" || loginRole === "PHCO") {
-      return [{role: "Asha Worker", value:"Asha Worker"}];
-    } else if(loginRole === "RDPR-DSO" || loginRole === "AEO" || loginRole === "PDO"){
-      return [{role:"Bill Collector", value: "Bill Collector"}];
-    } else {
-      let type = stateData?.Type;
-      return type === "Rural"
-        ? [{role: "Asha Worker", value:"Asha Worker"}, {role: "AWW", valule: "AWW"}, {role:"PDO", value: "PDO"}]
-        : [
-          {role:"Chief Collector/Commissioner", value: "chiefOrCommissioner"},
-          {role:"SHI/JHI/FGRI", value: "SHIOrJHIOrFGRI"},
-          {role:"Bill Collector", value: "Bill Collector"},
-          {role:"Bill Collector", value: "Bill Collector"}
-        ]
-    };
+      return ["DPM", "WCD-DD", "DHO", "RDPR-DSO","DUDC"];
   };
 
   return (
@@ -94,63 +74,34 @@ export default function ModalFormEdit({
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Row>
             <TextInputWithLabel
-              controlId={"validationCustom01"}
-              placeholder={"Type"}
-              value={stateData?.Type}
-              disabled={true}
-              onChange={handleInputChange}
-            />
-            <TextInputWithLabel
               controlId={"validationCustom02"}
               placeholder={"DistrictName"}
               value={stateData?.DistrictName}
               disabled={true}
               onChange={handleInputChange}
-            />
-            <TextInputWithLabel
-              controlId={"validationCustom03"}
-              placeholder={"TalukOrTownName"}
-              value={stateData?.TalukOrTownName}
-              disabled={true}
-              onChange={handleInputChange}
-            />
-            <TextInputWithLabel
-              controlId={"validationCustom04"}
-              placeholder={"PHCName"}
-              value={stateData?.PHCName}
-              disabled={true}
-              onChange={handleInputChange}
-            />
-            <TextInputWithLabel
-              controlId={"validationCustom05"}
-              placeholder={"SubCenterName"}
-              value={stateData?.SubCenterName}
-              disabled={true}
-              onChange={handleInputChange}
-            />
+              />
             <TextInputWithLabel
               controlId={"validationCustom06"}
               placeholder={"Mobile"}
               name={"Mobile"}
-              type={"number"}
-              value={stateData.Mobile}
+              value={stateData.Mobile || ""}
               maxLength={10}
+              type={"number"}
               onChange={handleInputChange}
             />
             <TextInputWithLabel
               controlId="validationCustom07"
               placeholder={"Name"}
               name={"Name"}
-              value={stateData.Name}
-              maxLength={50}
+              value={stateData?.Name || ''}
               onChange={handleInputChange}
             />
             <SelectInputWithLabel
               controlId={"validationCustom08"}
+              required={true}
               defaultSelect="Select Roles"
               options={renderRoles()}
               name={"Role"}
-              isValueAdded={true}
               value={stateData.Role}
               onChange={handleInputChange}
             />

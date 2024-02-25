@@ -20,10 +20,10 @@ const handleNavigate = () => {
 }
   return (
     <div className='border h-8 bg-emerald-300'>
-    <Row className='overflow-hidden w-full'>
+    <Row className='w-full'>
       <Col md={1} sm={4} xs={4} onClick={handleNavigate} className='cursor-pointer'><p><i className="bi bi-house-fill text-blue-600 text-xl"></i></p></Col>
       <Col md={6} sm={3} xs={4}>{title}</Col>
-      <Col md={5} sm={5} xs={4} onClick={handeClick} className='text-end text-lg cursor-pointer'>{"Logout"}</Col>
+      <Col md={5} sm={5} xs={4}className='text-end text-lg cursor-pointer'><span onClick={handeClick}>{"Logout"}</span></Col>
     </Row>
     </div>
   )

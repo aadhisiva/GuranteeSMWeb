@@ -3,7 +3,9 @@ export interface ISelectInput {
     value?:string; 
     defaultSelect?:string; 
     controlId?:string; 
-    name?:string; 
+    name?:string;
+    isValueAdded?: boolean, 
+    required?: boolean, 
     onChange?: (e: any) => void;
 }
 
@@ -17,6 +19,7 @@ export interface ITextInput {
     value?:string; 
     defaultOption?:string; 
     controlId?:string; 
+    type?:string; 
     maxLength?:number; 
     disabled?:boolean; 
     className?:any; 
@@ -29,13 +32,20 @@ export interface IMasterData {
     TalukOrTownName?:string; 
     HobliOrZoneName?:string; 
     VillageOrWardName?:number; 
+    Name?:number; 
+    Role?:number; 
+    Mobile?:number; 
 }
 export interface IModalFromEdit {
     title?: string;
     onHide?: () => void;
     show?: boolean;
+    saveType?: string;
     handleSubmitForm?: any;
     formData?: any;
     handleInputChange?: (e: any) => void;
     handleModifyAssignedUser?: any;
+}
+export interface ILoaderOverlay {
+    isLoading?: boolean;
 }

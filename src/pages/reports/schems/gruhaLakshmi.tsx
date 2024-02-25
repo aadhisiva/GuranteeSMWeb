@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Table, Button } from "react-bootstrap";
+import { Col, Row, Table, Button, FormCheck } from "react-bootstrap";
 import { postRequest } from "../../../Authentication/axiosrequest";
 import { IMasterData } from "../../../utilities/interfacesOrtype";
 import ModalFormEdit from "../../../components/common/modalFormEdit";
 import Titlebar from "../../../components/common/titlebar";
 import SelectInput from "../../../components/common/selectInput";
-import { RURAL_URBAN_OPTIONS } from "../../../utilities/constants";
+import {
+  DISTRICT_OPTIONS,
+  RURAL_URBAN_OPTIONS,
+} from "../../../utilities/constants";
 import CustomPagination from "../../../components/common/customPagination";
 import Spinner from "../../../components/common/spinner";
 import ReactDatePicker from "react-datepicker";
+import { getSubCentersFromApi, getTalukasFromApi } from "../../../utilities/resusedFunction";
 
 export default function GruhaLakshmi() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
@@ -17,6 +21,17 @@ export default function GruhaLakshmi() {
 
   const [editForm, setEditForm] = useState(false);
   const [formData, setFormData] = useState<IMasterData>();
+
+  // selected 
+  const [district, setDistict] = useState("");
+  const [taluk, setTaluk] = useState("");
+  const [sunCenter, setSubCenter] = useState("");
+
+  // to select dropdown option
+  const [talukSelectOption, setTalukSelectOption] = useState([]);
+  const [sunCenterSelectOption, setSubCenterSelectOption] = useState([]);
+
+  const [checkFilters, setCheckFilters] = useState("");
 
   const [FromDate, setFromDate] = useState(null);
   const [ToDate, setToDate] = useState(null);
@@ -36,10 +51,13 @@ export default function GruhaLakshmi() {
   const currentItems = copyOfiginalData.slice(startIndex, endIndex);
 
   const handleClick = async () => {
-    if(!FromDate) return alert("Select FromDate");
-    if(!ToDate) return alert("Select ToDate");
+    if (!FromDate) return alert("Select FromDate");
+    if (!ToDate) return alert("Select ToDate");
     setLoading(true);
-    let res = await postRequest("getGruhaLlakshmiReports", { FromDate, ToDate });
+    let res = await postRequest("getGruhaLlakshmiReports", {
+      FromDate,
+      ToDate,
+    });
     if (res.code === 200) {
       setOriginalData(res?.data);
       setCopyOriginalData(res?.data);
@@ -50,31 +68,164 @@ export default function GruhaLakshmi() {
     }
   };
 
+  const handleCheckBox = (e: any) => {
+    if (e.target.value === checkFilters) {
+      setCheckFilters("");
+    } else {
+      setCheckFilters(e.target.value);
+    }
+  };
+
+  const handleClearFilters = (e: any) => {
+      setCheckFilters("");
+  };
+
+  const handleDistrict = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const {value} = e.target;
+    setDistict(value);
+    let taluks = await getTalukasFromApi(value);
+    setTalukSelectOption(taluks);
+  }
+
+  const handleTaluk = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const {value} = e.target;
+    let subcenters = await getSubCentersFromApi(value);
+    setSubCenterSelectOption(subcenters);
+  }
+
+  const handleSubCenter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const {value} = e.target;
+    setSubCenter(value);
+  };
+
   const renderComponent = () => (
-    <>
+    <React.Fragment>
       <Titlebar title={"GruhaLakshmi Reports"} />
-      <Row className="border p-3 rounded-xl m-4">
+      <Row className="border bg-slate-200 p-3 rounded-xl m-4">
         <Col md={3} sm={6} className="m-2">
-          <ReactDatePicker
-            selected={FromDate}
-            onChange={(date: any) => setFromDate(date)}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="From Date"
-            className="form-control"
+          <FormCheck
+            inline
+            label="District Wise Reports"
+            value={"District"}
+            checked={checkFilters === "District"}
+            onChange={handleCheckBox}
           />
         </Col>
         <Col md={3} sm={6} className="m-2">
-          <ReactDatePicker
-            selected={ToDate}
-            onChange={(date: any) => setToDate(date)}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="To Date"
-            className="form-control"
+          <FormCheck
+            inline
+            label="Taluk Wise Reports"
+            value={"Taluk"}
+            checked={checkFilters === "Taluk"}
+            onChange={handleCheckBox}
           />
         </Col>
         <Col md={3} sm={6} className="m-2">
+          <FormCheck
+            inline
+            label="SubCenter Wise Reports"
+            value={"SubCenter"}
+            checked={checkFilters === "SubCenter"}
+            onChange={handleCheckBox}
+          />
+        </Col>
+        <Col md={2} sm={6} className="m-2">
+          <FormCheck
+            inline
+            label="Date Wise Reports"
+            value={"Date"}
+            checked={checkFilters === "Date"}
+            onChange={handleCheckBox}
+          />
+        </Col>
+        {checkFilters === "District" && (
+          <Col md={3} sm={6} className="m-2">
+            <SelectInput
+              defaultSelect="Select District"
+              options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+              onChange={handleDistrict}
+              value={district}
+            />
+          </Col>
+        )}
+        {checkFilters === "Date" && (
+          <React.Fragment>
+            <Col md={3} sm={6} className="m-2">
+              <ReactDatePicker
+                selected={FromDate}
+                onChange={(date: any) => setFromDate(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="From Date"
+                className="form-control"
+              />
+            </Col>
+            <Col md={3} sm={6} className="m-2">
+              <ReactDatePicker
+                selected={ToDate}
+                onChange={(date: any) => setToDate(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="To Date"
+                className="form-control"
+              />
+            </Col>
+          </React.Fragment>
+        )}
+        {checkFilters === "Taluk" && (
+          <React.Fragment>
+            <Col md={3} sm={6} className="m-2">
+              <SelectInput
+                defaultSelect="Select District"
+                options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+                onChange={handleDistrict}
+                value={district}
+              />
+            </Col>
+            <Col md={3} sm={6} className="m-2">
+              <SelectInput
+                defaultSelect="Select Taluk"
+                options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+                onChange={handleTaluk}
+                value={district}
+              />
+            </Col>
+          </React.Fragment>
+        )}
+        {checkFilters === "SubCenter" && (
+          <React.Fragment>
+            <Col md={3} sm={6} className="m-2">
+              <SelectInput
+                defaultSelect="Select District"
+                options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+                onChange={handleDistrict}
+                value={district}
+              />
+            </Col>
+            <Col md={3} sm={6} className="m-2">
+              <SelectInput
+                defaultSelect="Select Taluk"
+                options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+                onChange={handleTaluk}
+                value={district}
+              />
+            </Col>
+            <Col md={3} sm={6} className="m-2">
+              <SelectInput
+                defaultSelect="Select SubCenter"
+                options={(DISTRICT_OPTIONS || []).map((obj) => obj)}
+                onChange={handleSubCenter}
+                value={district}
+              />
+            </Col>
+          </React.Fragment>
+        )}
+        <Col md={2} sm={6} className="m-2">
           <Button variant="primary" onClick={handleClick}>
             Search
+          </Button>
+        </Col>
+        <Col md={2} sm={6} className="m-2">
+          <Button variant="primary" onClick={handleClearFilters}>
+            ClearFilters
           </Button>
         </Col>
       </Row>
@@ -135,7 +286,7 @@ export default function GruhaLakshmi() {
           )}
         </Col>
       </Row>
-    </>
+    </React.Fragment>
   );
 
   return (

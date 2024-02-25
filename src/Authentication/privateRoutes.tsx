@@ -5,7 +5,11 @@ import {
   ANNABHAGYA_REPORTS,
   ASSIGNED_DATA,
   ASSIGNMENT_DASHBOARD,
+  ASSIGN_TO_DISTRICT,
   ASSIGN_TO_MASTER,
+  ASSIGN_TO_PHCO,
+  ASSIGN_TO_SUBCENTER,
+  ASSIGN_TO_TALUK,
   DASHBOARD,
   GRUHAJYOTHI_REPORTS,
   GRUHALASHMI_REPORTS,
@@ -14,9 +18,8 @@ import {
   YUVANIDHI_REPORTS,
 } from "../utilities/routePaths";
 
+
 const DashBoardComponent = React.lazy(() => import("../pages/dashboard"));
-const AddUserComponent = React.lazy(() => import("../pages/addUser"));
-const ReportComponent = React.lazy(() => import("../pages/reports/reports"));
 
 const AssignMentDashBoardComponent = React.lazy(
   () => import("../pages/assignMent/assignMentDashBoard")
@@ -46,6 +49,19 @@ const YuvaNidhiComponent = React.lazy(
 const AnnaBhgyaComponent = React.lazy(
   () => import("../pages/reports/schems/annBhagya")
 );
+const AssignToDistrictComponent = React.lazy(
+  () => import("../pages/assignMent/assignToEach/district")
+);
+const AssignTOTalukComponent = React.lazy(
+  () => import("../pages/assignMent/assignToEach/taluk")
+);
+const AssignTOPhcoComponent = React.lazy(
+  () => import("../pages/assignMent/assignToEach/phco")
+);
+const AssignTOSubCenterComponent = React.lazy(
+  () => import("../pages/assignMent/assignToEach/subCenter")
+);
+
 
 export const PageRoutes = () => {
   return (
@@ -66,8 +82,11 @@ export const PageRoutes = () => {
       <Route path={SHAKTI_REPORTS} element={<ShakthiComponent />} />
       <Route path={YUVANIDHI_REPORTS} element={<YuvaNidhiComponent />} />
       <Route path={ANNABHAGYA_REPORTS} element={<AnnaBhgyaComponent />} />
+      <Route path={ASSIGN_TO_DISTRICT} element={<AssignToDistrictComponent />} />
+      <Route path={ASSIGN_TO_TALUK} element={<AssignTOTalukComponent />} />
+      <Route path={ASSIGN_TO_PHCO} element={<AssignTOPhcoComponent />} />
+      <Route path={ASSIGN_TO_SUBCENTER} element={<AssignTOSubCenterComponent />} />
 
-      <Route path={ADD_USER} element={<AddUserComponent />} />
       <Route index path="/*" element={<Navigate to={DASHBOARD} />} />
     </Routes>
   );

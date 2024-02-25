@@ -17,15 +17,18 @@
     "react-bootstrap": "^2.10.0",
     "react-datepicker": "^5.0.0",
     "react-dom": "^18.2.0",
+    "react-loading-overlay-ts": "^2.0.2",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
+  "homepage": "https://gss.karnataka.gov.in/GuaranteeSWeb",
   "scripts": {
     "start": "webpack serve",
     "Webpack": "webpack",

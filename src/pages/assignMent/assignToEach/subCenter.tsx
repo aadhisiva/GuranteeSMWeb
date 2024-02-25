@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
-import SelectInput from "../../components/common/selectInput";
-import { postRequest } from "../../Authentication/axiosrequest";
-import Spinner from "../../components/common/spinner";
-import { RURAL_URBAN_OPTIONS } from "../../utilities/constants";
-import CustomPagination from "../../components/common/customPagination";
-import { IMasterData } from "../../utilities/interfacesOrtype";
-import ModalFormEdit from "../../components/common/modalFormEdit";
-import Titlebar from "../../components/common/titlebar";
-import { IsAuthenticated } from "../../Authentication/useAuth";
-import LoaderOverlay from "../../components/common/LoadingOverlay";
+import { IMasterData } from "../../../utilities/interfacesOrtype";
+import { postRequest } from "../../../Authentication/axiosrequest";
+import { IsAuthenticated } from "../../../Authentication/useAuth";
+import Titlebar from "../../../components/common/titlebar";
+import SelectInput from "../../../components/common/selectInput";
+import { RURAL_URBAN_OPTIONS } from "../../../utilities/constants";
+import CustomPagination from "../../../components/common/customPagination";
+import LoaderOverlay from "../../../components/common/LoadingOverlay";
+import ModalFormEdit from "../../../components/common/modalFormEdit";
 
-export default function AssignMent() {
+
+export default function SubCenterAssign() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
   const [copyOfiginalData, setCopyOriginalData] = useState<IMasterData[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -41,6 +41,9 @@ export default function AssignMent() {
 
   const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
 
+  const [modalTitle, setModalTitle] = useState('');
+  const [showAssignMent, setAssignMent] = useState(true);
+
   const [{ Role, Mobile, loginCode }] = IsAuthenticated();
 
   const onPageChange = (page: number) => {
@@ -58,22 +61,23 @@ export default function AssignMent() {
     let res = await postRequest("getDisAndTalukAssignedData", {
       allData: "SD",
       role: Role,
-      code: loginCode
+      code: loginCode,
+      isAssignMent: showAssignMent ? "assign" : "",
+      Mobile: Mobile
     });
     if (res?.code === 200) {
       setOriginalData(res?.data);
       setCopyOriginalData(res?.data);
       setLoading(false);
     } else {
-      setLoading(false);
       setError(true);
-      setErrorMessage("Something Went Wrong Please try again.");
+      setErrorMessage(res?.response?.data?.message || "Please try again.");
     }
   };
 
   useEffect(() => {
     getAllMaster();
-  }, []);
+  }, [showAssignMent]);
 
   useEffect(() => {
     let filterData = originalData;
@@ -163,21 +167,26 @@ export default function AssignMent() {
     setSubCenter(value);
   };
 
-  const handleCLickAssign = async (obj: IMasterData) => {
-    // let res = await postRequest("", {SubCenterCode,});
+  const handleCLickAdd = async (obj: IMasterData) => {
     setFormData(obj);
     setEditForm(true);
+    setModalTitle("Add");
+  };
+
+  const handleCLickModify = async (obj: IMasterData) => {
+    setFormData(obj);
+    setEditForm(true);
+    setModalTitle("Modify");
   };
 
   const handleAssignSubCenter = async (values: IMasterData) => {
-    let res = await postRequest("addRefractionist", values);
+    let res = await postRequest(modalTitle === "Add"? "addRefractionist": "addDistrictAndTalukUser", values);
     if (res.code === 200) {
       setEditForm(false);
       await getAllMaster();
     } else {
       setEditForm(false);
-      setError(true);
-      setErrorMessage("Something Went Wrong Please try again.");
+      alert(res?.response?.data?.message || "Something Went Wrong Please try again.");
     }
   };
 
@@ -185,7 +194,8 @@ export default function AssignMent() {
     return (
       <ModalFormEdit
         show={editForm}
-        title={"Assign"}
+        title={modalTitle}
+        saveType={"SO"}
         formData={formData}
         handleSubmitForm={handleAssignSubCenter}
         onHide={() => setEditForm(false)}
@@ -204,7 +214,30 @@ export default function AssignMent() {
   const renderComponent = () => (
     <>
       {editForm && rednerForm()}
-      <Titlebar title={"Assigned To Master"} />
+      <Titlebar title={"SubCenter AssignMent"} />
+      <Row className="p-4">
+        <Col md={6} className="text-right">
+          <span
+            onClick={() => setAssignMent(true)}
+            className={`border p-3 rounded-xl ${
+              showAssignMent ? "bg-yellow-600" : "bg-blue-500"
+            } text-white`}
+          >
+            AssignMent
+          </span>
+        </Col>
+        <Col md={6}>
+          <span
+            onClick={() => setAssignMent(false)}
+            className={`border p-3 rounded-xl ${
+              !showAssignMent ? "bg-yellow-600" : "bg-blue-500"
+            } text-white`}
+          >
+            Assigned Data
+          </span>
+        </Col>
+        <Col></Col>
+      </Row>
       <Row className="border p-3 rounded-xl m-4">
         <Col>
           <SelectInput
@@ -271,50 +304,81 @@ export default function AssignMent() {
           {/* Replace the GridView with a React-based table */}
           {originalData.length !== 0 ? (
             <React.Fragment>
-              <Table responsive bordered>
+                {showAssignMent? (
+                    <Table responsive bordered>
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                        <th>DistrictName</th>
+                        <th>TalukOrTownName</th>
+                        <th>PHCName</th>
+                        <th>SubCenterName</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(currentItems || []).map((obj: any, index) => (
+                        <tr key={index}>
+                          <td>{obj?.Type}</td>
+                          <td>{obj?.DistrictName}</td>
+                          <td>{obj?.TalukOrTownName}</td>
+                          <td>{obj?.PHCName}</td>
+                          <td>{obj?.SubCenterName}</td>
+                          <td>
+                            <Button
+                              variant="primary"
+                              onClick={() => handleCLickAdd(obj)}
+                            >
+                              Add
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ): (
+                    <Table responsive bordered>
                 <thead>
                   <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Role</th>
                     <th>Type</th>
                     <th>DistrictName</th>
                     <th>TalukOrTownName</th>
-                    <th>HobliOrZoneName</th>
                     <th>PHCName</th>
                     <th>SubCenterName</th>
-                    {/* <th>VillageOrWardName</th> */}
-                    <th>Modify</th>
-                    {/* <th>Assign</th> */}
+                    <th>CreatedBy</th>
+                    <th>CreatedMobile</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {(currentItems || []).map((obj: any, index) => (
                     <tr key={index}>
+                      <td>{obj?.Name}</td>
+                      <td>{obj?.Mobile}</td>
+                      <td>{obj?.Role}</td>
                       <td>{obj?.Type}</td>
                       <td>{obj?.DistrictName}</td>
                       <td>{obj?.TalukOrTownName}</td>
-                      <td>{obj?.HobliOrZoneName}</td>
                       <td>{obj?.PHCName}</td>
                       <td>{obj?.SubCenterName}</td>
-                      {/* <td>{obj?.VillageOrWardName}</td> */}
+                      <td>{obj?.CreatedBy}</td>
+                      <td>{obj?.CreatedMobile}</td>
                       <td>
                         <Button
                           variant="primary"
-                          onClick={() => handleCLickAssign(obj)}
+                          onClick={() => handleCLickModify(obj)}
                         >
-                          Assign
+                          Modify
                         </Button>
                       </td>
-                      {/* <td>
-                      <Button
-                        variant="success"
-                        //   onClick={() => handleCLickRedemption(obj?.BookingId)}
-                      >
-                        Modify
-                      </Button>
-                    </td> */}
                     </tr>
                   ))}
                 </tbody>
               </Table>
+                )}
               <CustomPagination
                 totalPages={totalPages}
                 currentPage={currentPage}
