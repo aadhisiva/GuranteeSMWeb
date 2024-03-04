@@ -8,6 +8,7 @@ import TextInput from "./textInput";
 import TextInputWithLabel from "./textInputWithLabel";
 import SelectInputWithLabel from "./selectInputWithLabel";
 import { IsAuthenticated } from "../../Authentication/useAuth";
+import { DISTRICT_ALL_ROLES } from "../../utilities/roles";
 
 export default function DistrictModal({
   show,
@@ -35,7 +36,7 @@ export default function DistrictModal({
           Name: stateData.Name,
           Mobile: stateData.Mobile,
           type: saveType,
-          Role: stateData?.Role,
+          Role: stateData?.Role || Role,
           DistrictCode: stateData?.DistrictCode,
           CreatedBy: loginRole,
           CreatedMobile: Mobile
@@ -56,7 +57,7 @@ export default function DistrictModal({
   }
 
   const renderRoles = () => {
-      return ["DPM", "WCD-DD", "DHO", "RDPR-DSO","DUDC"];
+      return DISTRICT_ALL_ROLES;
   };
 
   return (
@@ -76,7 +77,7 @@ export default function DistrictModal({
             <TextInputWithLabel
               controlId={"validationCustom02"}
               placeholder={"DistrictName"}
-              value={stateData?.DistrictName}
+              value={stateData?.DistrictName || ""}
               disabled={true}
               onChange={handleInputChange}
               />

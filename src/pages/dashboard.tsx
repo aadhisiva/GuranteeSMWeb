@@ -17,24 +17,24 @@ import { ROLES } from "../utilities/constants";
 import { IsAuthenticated } from "../Authentication/useAuth";
 import { postRequest } from "../Authentication/axiosrequest";
 import LoaderOverlay from "../components/common/LoadingOverlay";
+import { IDashBoardCounts } from "../utilities/interfacesOrtype";
+import { numberWithCommas } from "../utilities/resusedFunction";
 
 export default function Dashboard() {
-  const [originalData, setOriginalData] = useState([]);
-  const [copyOfiginalData, setCopyOriginalData] = useState([]);
+  const [originalData, setOriginalData] = useState<IDashBoardCounts[] | []>([]);
+  const [copyOfOriginalData, setCopyOriginalData] = useState<IDashBoardCounts[] | []>([]);
   const [isLoading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const [{ Role }] = IsAuthenticated();
+  const [{ Role, loginCode }] = IsAuthenticated();
 
   const getAllMaster = async () => {
     setLoading(true);
-    // let res = await postRequest("getDisAndTalukAssignedData", {
-    //   allData: "DD",
-    //   role: '',
-    //   code: ''
-    // });
-    let res: any = {code: 200};
+    let res = await postRequest("getDashBoardCounts", {
+      Role: Role,
+      DistrictCode: loginCode,
+    });
     if (res?.code === 200) {
       setOriginalData(res?.data || []);
       setCopyOriginalData(res?.data || []);
@@ -65,7 +65,7 @@ export default function Dashboard() {
             className="h-40 border rounded-xl bg-[#3bb5d0]  flex items-center p-2"
           >
             <span className="text-center text-white text-xl">
-              Total Surveyed Count : {0}
+              Total Surveyed Count : {numberWithCommas(originalData[0]?.Totalcount || 0)}
             </span>
           </div>
         </Col>
@@ -75,17 +75,17 @@ export default function Dashboard() {
             className="h-40 border rounded-xl bg-[#8b3737]  flex items-center p-2"
           >
             <span className="text-center text-white text-xl">
-              Online Rc Count : {0}
+              Online Rc Count : {numberWithCommas(originalData[0]?.TotalOnline || 0)}
             </span>
           </div>
         </Col>
         <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
           <div
-            // onClick={() => navigate(ASSIGNMENT_DASHBOARD)}
+            onClick={() => navigate(ASSIGNMENT_DASHBOARD)}
             className="h-40 border rounded-xl bg-[#2b6e22]  flex items-center p-2"
           >
             <span className="text-center text-white text-xl">
-              Offline Rc Count : {0}
+              Offline Rc Count : {numberWithCommas(originalData[0]?.TotalOffline || 0)}
             </span>
           </div>
         </Col>
@@ -95,7 +95,7 @@ export default function Dashboard() {
             className="h-40 border rounded-xl bg-[#183d52] flex items-center p-2"
           >
             <span className="text-center text-white text-xl">
-              Offline Mobile Based Count : {0}
+              Offline Mobile Based Count : {numberWithCommas(originalData[0]?.TotalMobile || 0)}
             </span>
           </div>
         </Col>
@@ -124,7 +124,7 @@ export default function Dashboard() {
                 onClick={() => navigate(ASSIGN_TO_TALUK)}
                 className="h-40 border rounded-xl bg-[#d653d4]  flex items-center justify-center"
               >
-                <span className="text-center text-white text-xl">Taluk</span>
+                <span className="text-center text-white text-xl">Taluk/Zone</span>
               </div>
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
@@ -132,7 +132,7 @@ export default function Dashboard() {
                 onClick={() => navigate(ASSIGN_TO_PHCO)}
                 className="h-40 border rounded-xl bg-[#ae3492]  flex items-center justify-center"
               >
-                <span className="text-center text-white text-xl">PHCO</span>
+                <span className="text-center text-white text-xl">PHCO/Division</span>
               </div>
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
@@ -141,7 +141,7 @@ export default function Dashboard() {
                 className="h-40 border rounded-xl bg-[#6ec93d]  flex items-center justify-center"
               >
                 <span className="text-center justify-center text-white text-xl">
-                  {"SubCenter"}
+                  {"SubCenter/Ward"}
                 </span>
               </div>
             </Col>
@@ -155,7 +155,7 @@ export default function Dashboard() {
                 onClick={() => navigate(ASSIGN_TO_TALUK)}
                 className="h-40 border rounded-xl bg-[#d653d4]  flex items-center justify-center"
               >
-                <span className="text-center text-white text-xl">Taluk</span>
+                <span className="text-center text-white text-xl">Taluk/Zone</span>
               </div>
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
@@ -163,7 +163,7 @@ export default function Dashboard() {
                 onClick={() => navigate(ASSIGN_TO_PHCO)}
                 className="h-40 border rounded-xl bg-[#ae3492]  flex items-center justify-center"
               >
-                <span className="text-center text-white text-xl">PHCO</span>
+                <span className="text-center text-white text-xl">PHCO/Division</span>
               </div>
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 className="h-40 border rounded-xl bg-[#4ab8ef]  flex items-center justify-center"
               >
                 <span className="text-center justify-center text-white text-xl">
-                  {"SubCenter"}
+                  {"SubCenter/Ward"}
                 </span>
               </div>
             </Col>
@@ -186,7 +186,7 @@ export default function Dashboard() {
                 onClick={() => navigate(ASSIGN_TO_PHCO)}
                 className="h-40 border rounded-xl bg-[#ae3492]  flex items-center justify-center"
               >
-                <span className="text-center text-white text-xl">PHCO</span>
+                <span className="text-center text-white text-xl">PHCO/Division</span>
               </div>
             </Col>
             <Col xs={6} md={3} sm={5} className="m-2 cursor-pointer">
@@ -195,7 +195,7 @@ export default function Dashboard() {
                 className="h-40 border rounded-xl bg-[#4ab8ef]  flex items-center justify-center"
               >
                 <span className="text-center justify-center text-white text-xl">
-                  {"SubCenter"}
+                  {"SubCenter/Ward"}
                 </span>
               </div>
             </Col>
@@ -209,7 +209,7 @@ export default function Dashboard() {
                 className="h-40 border rounded-xl bg-[#4ab8ef]  flex items-center justify-center"
               >
                 <span className="text-center justify-center text-white text-xl">
-                  {"SubCenter"}
+                  {"SubCenter/Ward"}
                 </span>
               </div>
             </Col>

@@ -10,6 +10,7 @@ import { postRequest } from "../../../Authentication/axiosrequest";
 import { IsAuthenticated } from "../../../Authentication/useAuth";
 import PhcoModal from "../../../components/common/phcoModal";
 import LoaderOverlay from "../../../components/common/LoadingOverlay";
+import { SearchBox } from "../../../components/common/searchBox";
 
 export default function PhcoAssign() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
@@ -40,7 +41,7 @@ export default function PhcoAssign() {
   const [itemsPerPage, setItemsPerPage] = useState(100);
 
   const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [showAssignMent, setAssignMent] = useState(true);
 
   const [{ Role, Mobile, loginCode }] = IsAuthenticated();
@@ -53,7 +54,20 @@ export default function PhcoAssign() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = copyOfiginalData.slice(startIndex, endIndex);
+
+  const filteredData = (copyOfiginalData || []).filter((item) => {
+    return (
+      item?.DistrictName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Mobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedBy?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedMobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.TalukOrTownName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.PHCName?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  const currentItems = filteredData.slice(startIndex, endIndex);
 
   const getAllMaster = async () => {
     setLoading(true);
@@ -62,7 +76,7 @@ export default function PhcoAssign() {
       role: Role,
       code: loginCode,
       isAssignMent: showAssignMent ? "assign" : "",
-      Mobile: Mobile
+      Mobile: Mobile,
     });
     if (res?.code === 200) {
       setOriginalData(res?.data);
@@ -217,7 +231,7 @@ export default function PhcoAssign() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select Taluka"
+            defaultSelect="Select Taluka/Zone"
             options={(
               Array.from(
                 new Set((talukaSelect || []).map((obj) => obj.TalukOrTownName))
@@ -229,7 +243,7 @@ export default function PhcoAssign() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select Phc"
+            defaultSelect="Select Phc/Division"
             options={(
               Array.from(
                 new Set((phcSelect || []).map((obj) => obj.PHCName))
@@ -243,6 +257,12 @@ export default function PhcoAssign() {
           <Button onClick={handleClearFilters}>Clear Filters</Button>
         </Col>
       </Row>
+      <Row className="m-4">
+        <Col md={4}>
+          <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </Col>
+      </Row>
+
       <Row className="pt-3 m-3">
         <Col>
           {/* Replace the GridView with a React-based table */}
@@ -253,8 +273,8 @@ export default function PhcoAssign() {
                   <thead>
                     <tr>
                       <th>DistrictName</th>
-                      <th>TalukOrTownName</th>
-                      <th>PHCName</th>
+                      <th>TalukOrTownName/Zone</th>
+                      <th>PHCName/Division</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -284,8 +304,8 @@ export default function PhcoAssign() {
                       <th>Mobile</th>
                       <th>Role</th>
                       <th>DistrictName</th>
-                      <th>TalukOrTownName</th>
-                      <th>PHCName</th>
+                      <th>TalukOrTownName/Zone</th>
+                      <th>PHCName/Divison</th>
                       <th>CreatedBy</th>
                       <th>CreatedMobile</th>
                       <th>Action</th>
@@ -316,6 +336,8 @@ export default function PhcoAssign() {
                 </Table>
               )}
               <CustomPagination
+                currentCount={currentItems.length|| 0}
+                totalCount={copyOfiginalData.length || 0}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={onPageChange}

@@ -9,11 +9,12 @@ import Spinner from "../../../components/common/spinner";
 import DistrictModal from "../../../components/common/districtModal";
 import { IsAuthenticated } from "../../../Authentication/useAuth";
 import LoaderOverlay from "../../../components/common/LoadingOverlay";
+import { SearchBox } from "../../../components/common/searchBox";
 
 export default function AssignToDistrict() {
-  const [originalData, setOriginalData] = useState<IMasterData[]>([]);
-  const [copyOfiginalData, setCopyOriginalData] = useState<IMasterData[]>([]);
-  const [isLoading, setLoading] = useState(false);
+  const [originalData, setOriginalData] = useState<IMasterData[]>([]); // main data
+  const [copyOfiginalData, setCopyOriginalData] = useState<IMasterData[]>([]); // main data
+  const [isLoading, setLoading] = useState(false); // loader
 
   // selected values
   const [ruralUrban, setRuralUrban] = useState("");
@@ -21,19 +22,34 @@ export default function AssignToDistrict() {
 
   // selectable values
   const [districtSelect, setDistrictSelect] = useState<IMasterData[]>();
-
+  // form Data
   const [editForm, setEditForm] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [formData, setFormData] = useState<IMasterData>();
 
+  // pagination details
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
-
-  const [showAssignMent, setAssignMent] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
 
-  const [{ Role, Mobile, loginCode }] = IsAuthenticated();
+  const filteredData = (copyOfiginalData || []).filter((item) => {
+    return (
+      item?.DistrictName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Mobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedBy?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedMobile?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  const currentItems: IMasterData[] = filteredData.slice(startIndex, endIndex);
+
+  // show assignment
+  const [showAssignMent, setAssignMent] = useState(true);
 
   const onPageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -41,10 +57,7 @@ export default function AssignToDistrict() {
     }
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = copyOfiginalData.slice(startIndex, endIndex);
-
+  // assign initial data
   const getAllMaster = async () => {
     setLoading(true);
     let res = await postRequest("getDisAndTalukAssignedData", {
@@ -69,25 +82,12 @@ export default function AssignToDistrict() {
 
   useEffect(() => {
     let filterData = originalData;
-    // filter rural/urban
-    // if (ruralUrban) {
-    //   filterData = filterData.filter((obj) => obj.Type === ruralUrban);
-    // }
-    // filter rural/urban and district
     if (district) {
       filterData = filterData.filter((obj) => obj.DistrictName === district);
     }
     setCopyOriginalData(filterData);
   }, [district]);
 
-  const handleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    if (value === ruralUrban) return;
-    setRuralUrban(value);
-    setDistrict("");
-    let reset = originalData.filter((obj) => obj.Type === value);
-    setDistrictSelect(reset);
-  };
   const handleDistrict = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     setDistrict(value);
@@ -139,7 +139,6 @@ export default function AssignToDistrict() {
     <>
       {editForm && rednerForm()}
       <Titlebar title={"District Assignment"} />
-      {/* <Row className="border p-4 border-black m-4 rounded-xl"> */}
       <Row className="p-4">
         <Col md={6} className="text-right">
           <span
@@ -180,11 +179,16 @@ export default function AssignToDistrict() {
           <Button onClick={handleClearFilters}>Clear Filters</Button>
         </Col>
       </Row>
+      <Row>
+        <Col md={4}>
+          <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </Col>
+      </Row>
       {showAssignMent ? (
         <Row className="pt-3 m-3">
           <Col>
             {/* Replace the GridView with a React-based table */}
-            {originalData.length !== 0 ? (
+            {filteredData.length !== 0 ? (
               <React.Fragment>
                 <Table responsive bordered>
                   <thead>
@@ -262,6 +266,8 @@ export default function AssignToDistrict() {
                   </tbody>
                 </Table>
                 <CustomPagination
+                  currentCount={currentItems.length|| 0}
+                  totalCount={copyOfiginalData.length || 0}
                   totalPages={totalPages}
                   currentPage={currentPage}
                   onPageChange={onPageChange}

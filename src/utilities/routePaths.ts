@@ -12,12 +12,15 @@ export const ASSIGN_TO_PHCO = "/AssignToPhco";
 export const ASSIGN_TO_SUBCENTER = "/AssignToSubCenter";
 
 
-export const REPORTS_DASHBOARD = "/ReportsDashBoard";
+export const REPORTS_DASHBOARD = "/Reports/ReportsDashBoard";
 export const GRUHALASHMI_REPORTS = "/GurhaLaksmiReports";
 export const GRUHAJYOTHI_REPORTS = "/GruhaJyothiReports";
 export const ANNABHAGYA_REPORTS = "/AnnaBhagyaReports";
 export const YUVANIDHI_REPORTS = "/YuvaNidhiReports";
 export const SHAKTI_REPORTS = "/ShaktiReports";
+
+export const DISTRICT_WISE_REPORTS = "/Reports/DistrictWise";
+export const TALUK_WISE_REPORTS = "/Reports/TalukWise";
 
 export const OVERALL_REPORTS = "/OverAllReports";
 export const REDEMPTION = "/Redemption";

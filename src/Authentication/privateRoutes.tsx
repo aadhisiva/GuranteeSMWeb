@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import {
-  ADD_USER,
   ANNABHAGYA_REPORTS,
   ASSIGNED_DATA,
   ASSIGNMENT_DASHBOARD,
@@ -11,10 +10,12 @@ import {
   ASSIGN_TO_SUBCENTER,
   ASSIGN_TO_TALUK,
   DASHBOARD,
+  DISTRICT_WISE_REPORTS,
   GRUHAJYOTHI_REPORTS,
   GRUHALASHMI_REPORTS,
   REPORTS_DASHBOARD,
   SHAKTI_REPORTS,
+  TALUK_WISE_REPORTS,
   YUVANIDHI_REPORTS,
 } from "../utilities/routePaths";
 
@@ -61,6 +62,12 @@ const AssignTOPhcoComponent = React.lazy(
 const AssignTOSubCenterComponent = React.lazy(
   () => import("../pages/assignMent/assignToEach/subCenter")
 );
+const TalukWiseReportsComponent = React.lazy(
+  () => import("../pages/reports/talukWise")
+);
+const DistrictWiseReportsComponent = React.lazy(
+  () => import("../pages/reports/districtWise")
+);
 
 
 export const PageRoutes = () => {
@@ -86,6 +93,9 @@ export const PageRoutes = () => {
       <Route path={ASSIGN_TO_TALUK} element={<AssignTOTalukComponent />} />
       <Route path={ASSIGN_TO_PHCO} element={<AssignTOPhcoComponent />} />
       <Route path={ASSIGN_TO_SUBCENTER} element={<AssignTOSubCenterComponent />} />
+
+      <Route path={DISTRICT_WISE_REPORTS} element={<DistrictWiseReportsComponent />} />
+      <Route path={TALUK_WISE_REPORTS} element={<TalukWiseReportsComponent />} />
 
       <Route index path="/*" element={<Navigate to={DASHBOARD} />} />
     </Routes>

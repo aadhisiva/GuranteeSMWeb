@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
 import { IMasterData } from "../../../utilities/interfacesOrtype";
 import { postRequest } from "../../../Authentication/axiosrequest";
@@ -9,6 +9,7 @@ import Spinner from "../../../components/common/spinner";
 import TalukModal from "../../../components/common/talukaModal";
 import { IsAuthenticated } from "../../../Authentication/useAuth";
 import LoaderOverlay from "../../../components/common/LoadingOverlay";
+import { SearchBox } from "../../../components/common/searchBox";
 
 export default function AssignToTaluk() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
@@ -31,6 +32,8 @@ export default function AssignToTaluk() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [showAssignMent, setAssignMent] = useState(true);
 
   const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
@@ -45,7 +48,18 @@ export default function AssignToTaluk() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = copyOfiginalData.slice(startIndex, endIndex);
+
+  const filteredData = (copyOfiginalData || []).filter((item) =>{
+    return item?.DistrictName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.TalukOrTownName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.Mobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.Role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.CreatedBy?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item?.CreatedMobile?.toLowerCase().includes(searchTerm.toLowerCase())
+    }
+  ); 
+  const currentItems = filteredData.slice(startIndex, endIndex);
 
   const getAllMaster = async () => {
     setLoading(true);
@@ -90,15 +104,6 @@ export default function AssignToTaluk() {
     setCopyOriginalData(filterData);
   }, [district, taluka]);
 
-  // const handleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const { value } = e.target;
-  //   if (value === ruralUrban) return;
-  //   setRuralUrban(value);
-  //   setDistrict("");
-  //   setTaluka("");
-  //   let reset = originalData.filter((obj) => obj.Type === value);
-  //   setDistrictSelect(reset);
-  // };
   const handleDistrict = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     setDistrict(value);
@@ -154,6 +159,7 @@ export default function AssignToTaluk() {
     setTaluka("");
   };
 
+
   const renderComponent = () => (
     <>
       {editForm && rednerForm()}
@@ -179,7 +185,6 @@ export default function AssignToTaluk() {
             Assigned Data
           </span>
         </Col>
-        <Col></Col>
       </Row>
       <Row className="border p-3 rounded-xl m-4">
         <Col>
@@ -196,7 +201,7 @@ export default function AssignToTaluk() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select Taluka"
+            defaultSelect="Select Taluka/Zone"
             options={(
               Array.from(
                 new Set((talukaSelect || []).map((obj) => obj.TalukOrTownName))
@@ -210,17 +215,22 @@ export default function AssignToTaluk() {
           <Button onClick={handleClearFilters}>Clear Filters</Button>
         </Col>
       </Row>
+      <Row className="m-4">
+        <Col md={4}>
+              <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </Col>
+      </Row>
       <Row className="pt-3 m-3">
         <Col>
           {/* Replace the GridView with a React-based table */}
-          {originalData.length !== 0 ? (
+          {filteredData.length !== 0 ? (
             <React.Fragment>
               {showAssignMent ? (
                 <Table responsive bordered>
                   <thead>
                     <tr>
                       <th>DistrictName</th>
-                      <th>TalukOrTownName</th>
+                      <th>TalukOrTownName/Zone</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -250,7 +260,7 @@ export default function AssignToTaluk() {
                       <th>Mobile</th>
                       <th>Role</th>
                       <th>DistrictName</th>
-                      <th>TalukOrTownName</th>
+                      <th>TalukOrTownName/Zone</th>
                       <th>CreatedBy</th>
                       <th>CreatedMobile</th>
                       <th>Action</th>
@@ -280,6 +290,8 @@ export default function AssignToTaluk() {
                 </Table>
               )}
               <CustomPagination
+                currentCount={currentItems.length|| 0}
+                totalCount={copyOfiginalData.length || 0}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={onPageChange}

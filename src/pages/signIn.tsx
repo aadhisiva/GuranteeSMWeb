@@ -9,6 +9,7 @@ import { IsAuthenticated } from "../Authentication/useAuth";
 import { CustomCaptch } from "../components/cutomCaptch";
 import { LOGIN_ROLES } from "../utilities/constants";
 import "./dashboard.css";
+import { debounceFunction } from "../utilities/resusedFunction";
 
 export default function SignIn({ auth }: any) {
   const [validated, setValidated] = useState(false);
@@ -17,6 +18,7 @@ export default function SignIn({ auth }: any) {
   const [Role, setRole] = useState("");
   const [Mobile, setMobile] = useState("");
   const [isOtpValidate, setIsOtpValidate] = useState(false);
+  const [isbuttonActive, setButtonActive] = useState(false);
 
   const [captch, setFreshCaptch] = useState("");
   const [captchValue, setCaptchaValue] = useState("");
@@ -26,6 +28,7 @@ export default function SignIn({ auth }: any) {
   const [{ Otp }] = IsAuthenticated();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setButtonActive(true);
     event.preventDefault();
     const form = event.currentTarget;
     if (!Mobile) return alert("Enter Mobile");
@@ -37,8 +40,10 @@ export default function SignIn({ auth }: any) {
 
       if (res.code === 200) {
         setIsOtpValidate(true);
+        setButtonActive(false);
         dispatch(userLoggedIn(res?.data));
       } else {
+        setButtonActive(false);
         alert(res?.response?.data?.message || "Please try again.");
       }
     }
@@ -67,7 +72,7 @@ export default function SignIn({ auth }: any) {
   return (
     <div className="flex mt-8 justify-center items-center">
       <a className="float">
-        <i className="my-float">1.0.0</i>
+        <i className="my-float">1.0.7</i>
       </a>
       <Card className="text-center pb-5">
         {!isOtpValidate ? (
@@ -99,7 +104,7 @@ export default function SignIn({ auth }: any) {
                 }
               />
             </Row>
-            <Button type="submit">Submit</Button>
+            <Button disabled={isbuttonActive} type="submit">Submit</Button>
           </Form>
         ) : (
           <Form
@@ -146,7 +151,7 @@ export default function SignIn({ auth }: any) {
                 captchValue={captchValue}
               />
             </Row>
-            <Button type="submit">Submit</Button>
+            <Button disabled={isbuttonActive} type="submit">Submit</Button>
           </Form>
         )}
       </Card>

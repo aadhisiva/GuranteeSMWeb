@@ -11,8 +11,8 @@ export const RURAL_URBAN_OPTIONS = ["Rural", "Urban"]
 export const LOGIN_ROLES = [
     {value: "Super Admin", role: "Super Admin"},
     {value: "District Officer", role: "District Officer"},
-    {value: "Taluk Officer", role: "Taluk Officer"},
-    {value: "Phco Officer", role: "Phco Officer"}
+    {value: "Taluk Officer", role: "Taluk/Zone"},
+    {value: "Phco Officer", role: "Phco/Divison"}
 ];
 
 export enum ROLES {

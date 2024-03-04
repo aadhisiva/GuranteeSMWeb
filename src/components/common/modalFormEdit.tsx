@@ -8,6 +8,7 @@ import TextInput from "./textInput";
 import TextInputWithLabel from "./textInputWithLabel";
 import SelectInputWithLabel from "./selectInputWithLabel";
 import { IsAuthenticated } from "../../Authentication/useAuth";
+import { DISTRICT_ROLES, PHC_ROLES, TALUK_ROLES } from "../../utilities/roles";
 
 export default function ModalFormEdit({
   show,
@@ -26,7 +27,7 @@ export default function ModalFormEdit({
     ...formData,
   });
 
-  const [{ loginRole, Mobile }] = IsAuthenticated();
+  const [{ Role, loginRole, Mobile }] = IsAuthenticated();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,7 +37,7 @@ export default function ModalFormEdit({
         let forApiBody = {
           Name: stateData.Name,
           Mobile: stateData.Mobile,
-          Role: stateData.Role,
+          Role: stateData.Role || Role,
           type: saveType,
           SubCenterCode: stateData.SubCenterCode,
           Type: stateData?.Type,
@@ -58,25 +59,32 @@ export default function ModalFormEdit({
         [name]: value
     }))
   }
+  console.log("loginRole",loginRole)
 
   const renderRoles = () => {
-    if(loginRole === "WCD-DD" || loginRole === "CDPO" || loginRole === "SuperVisor"){
+
+    if(loginRole === DISTRICT_ROLES.WCD || loginRole === TALUK_ROLES.CDPO || loginRole === PHC_ROLES.SuperVisor){
       return [{role: "AWW", valule: "AWW"}];
-    } else if(loginRole === "DHO" || loginRole === "THO" || loginRole === "PHCO") {
+    } else if(loginRole === DISTRICT_ROLES.DHO || loginRole === TALUK_ROLES.THO || loginRole === PHC_ROLES.PHCO){
       return [{role: "Asha Worker", value:"Asha Worker"}];
-    } else if(loginRole === "RDPR-DSO" || loginRole === "AEO" || loginRole === "PDO"){
-      return [{role:"Bill Collector", value: "Bill Collector"}];
+    } else if(loginRole === DISTRICT_ROLES.RDPR || loginRole === TALUK_ROLES.EO || loginRole === PHC_ROLES.PDO){
+      return [{role:"GP Assistant", value: "GP Assistant"}];
+    } else if(loginRole === DISTRICT_ROLES.DUDC || loginRole === TALUK_ROLES.CMC_TMC_TPC || loginRole === PHC_ROLES.CAO_CO){
+      return [{role:"CTC Assistant", value: "CTC Assistant"}];
+    } else if(loginRole === DISTRICT_ROLES.BBMP || loginRole === TALUK_ROLES.ZON_IC || loginRole === PHC_ROLES.DIVISON_IN){
+      return [{role:"Urban Surveyor", value: "Urban Surveyor"}];
     } else {
       let type = stateData?.Type;
-      return type === "Rural"
-        ? [{role: "Asha Worker", value:"Asha Worker"}, {role: "AWW", valule: "AWW"}, {role:"PDO", value: "PDO"}]
-        : [
-          {role:"Chief Collector/Commissioner", value: "chiefOrCommissioner"},
-          {role:"SHI/JHI/FGRI", value: "SHIOrJHIOrFGRI"},
-          {role:"Bill Collector", value: "Bill Collector"},
-          {role:"Bill Collector", value: "Bill Collector"}
-        ]
-    };
+        return type === "Rural"
+          ? [{role: "Asha Worker", value:"Asha Worker"}, {role: "AWW", valule: "AWW"}]
+          : [
+            {role: "Asha Worker", value:"Asha Worker"}, 
+            {role:"Urban Surveyor", value: "Urban Surveyor"},
+            {role:"GP Assistant", value: "GP Assistant"},
+            {role:"CTC Assistant", value: "CTC Assistant"},
+            {role: "AWW", valule: "AWW"},
+          ]
+    }
   };
 
   return (
@@ -103,28 +111,28 @@ export default function ModalFormEdit({
             <TextInputWithLabel
               controlId={"validationCustom02"}
               placeholder={"DistrictName"}
-              value={stateData?.DistrictName}
+              value={stateData?.DistrictName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
             <TextInputWithLabel
               controlId={"validationCustom03"}
               placeholder={"TalukOrTownName"}
-              value={stateData?.TalukOrTownName}
+              value={stateData?.TalukOrTownName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
             <TextInputWithLabel
               controlId={"validationCustom04"}
               placeholder={"PHCName"}
-              value={stateData?.PHCName}
+              value={stateData?.PHCName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
             <TextInputWithLabel
               controlId={"validationCustom05"}
               placeholder={"SubCenterName"}
-              value={stateData?.SubCenterName}
+              value={stateData?.SubCenterName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
@@ -148,6 +156,7 @@ export default function ModalFormEdit({
             <SelectInputWithLabel
               controlId={"validationCustom08"}
               defaultSelect="Select Roles"
+              required={true}
               options={renderRoles()}
               name={"Role"}
               isValueAdded={true}

@@ -9,11 +9,12 @@ import { RURAL_URBAN_OPTIONS } from "../../../utilities/constants";
 import CustomPagination from "../../../components/common/customPagination";
 import LoaderOverlay from "../../../components/common/LoadingOverlay";
 import ModalFormEdit from "../../../components/common/modalFormEdit";
+import { SearchBox } from "../../../components/common/searchBox";
 
 
 export default function SubCenterAssign() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
-  const [copyOfiginalData, setCopyOriginalData] = useState<IMasterData[]>([]);
+  const [copyOfOriginalData, setCopyOriginalData] = useState<IMasterData[]>([]);
   const [isLoading, setLoading] = useState(false);
 
   // selected values
@@ -38,12 +39,13 @@ export default function SubCenterAssign() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
+  const totalPages = Math.ceil(copyOfOriginalData.length / itemsPerPage);
 
   const [modalTitle, setModalTitle] = useState('');
   const [showAssignMent, setAssignMent] = useState(true);
-
+  
   const [{ Role, Mobile, loginCode }] = IsAuthenticated();
 
   const onPageChange = (page: number) => {
@@ -54,7 +56,24 @@ export default function SubCenterAssign() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = copyOfiginalData.slice(startIndex, endIndex);
+
+  
+  const filteredData = (copyOfOriginalData || []).filter((item) => {
+    return (
+      item?.DistrictName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Mobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedBy?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.CreatedMobile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.Type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.TalukOrTownName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.PHCName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.SubCenterName?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const currentItems = filteredData.slice(startIndex, endIndex);
 
   const getAllMaster = async () => {
     setLoading(true);
@@ -261,7 +280,7 @@ export default function SubCenterAssign() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select Taluka"
+            defaultSelect="Select Taluka/Zone"
             options={(
               Array.from(
                 new Set((talukaSelect || []).map((obj) => obj.TalukOrTownName))
@@ -273,7 +292,7 @@ export default function SubCenterAssign() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select Phc"
+            defaultSelect="Select Phc/Division"
             options={(
               Array.from(
                 new Set((phcSelect || []).map((obj) => obj.PHCName))
@@ -285,7 +304,7 @@ export default function SubCenterAssign() {
         </Col>
         <Col>
           <SelectInput
-            defaultSelect="Select SubCenter"
+            defaultSelect="Select SubCenter/Ward"
             options={(
               Array.from(
                 new Set((subCenterSelect || []).map((obj) => obj.SubCenterName))
@@ -299,6 +318,12 @@ export default function SubCenterAssign() {
           <Button onClick={handleClearFilters}>Clear Filters</Button>
         </Col>
       </Row>
+      <Row className="m-3">
+        <Col md={4}>
+              <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </Col>
+ </Row>
+
       <Row className="pt-3 m-3">
         <Col>
           {/* Replace the GridView with a React-based table */}
@@ -310,9 +335,9 @@ export default function SubCenterAssign() {
                       <tr>
                         <th>Type</th>
                         <th>DistrictName</th>
-                        <th>TalukOrTownName</th>
-                        <th>PHCName</th>
-                        <th>SubCenterName</th>
+                        <th>TalukOrTownName/Zone</th>
+                    <th>PHCName/Division</th>
+                    <th>SubCenterName/Ward</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -345,9 +370,9 @@ export default function SubCenterAssign() {
                     <th>Role</th>
                     <th>Type</th>
                     <th>DistrictName</th>
-                    <th>TalukOrTownName</th>
-                    <th>PHCName</th>
-                    <th>SubCenterName</th>
+                    <th>TalukOrTownName/Zone</th>
+                    <th>PHCName/Division</th>
+                    <th>SubCenterName/Ward</th>
                     <th>CreatedBy</th>
                     <th>CreatedMobile</th>
                     <th>Action</th>
@@ -380,6 +405,8 @@ export default function SubCenterAssign() {
               </Table>
                 )}
               <CustomPagination
+               currentCount={currentItems.length|| 0}
+               totalCount={copyOfOriginalData.length || 0}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={onPageChange}

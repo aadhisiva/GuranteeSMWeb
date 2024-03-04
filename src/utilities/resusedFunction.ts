@@ -21,3 +21,18 @@ export const getSubCentersFromApi = async (value: string) => {
         alert("Something went wrong. Please try again");
     }
 };
+
+
+export const debounceFunction = (callback: any, wait: number) => {
+    let timeoutId: any = null;
+    return (...args:any) => {
+      window.clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        callback(...args);
+      }, wait);
+    };
+  };
+
+export function numberWithCommas(x: number) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+};

@@ -8,6 +8,7 @@ import TextInput from "./textInput";
 import TextInputWithLabel from "./textInputWithLabel";
 import SelectInputWithLabel from "./selectInputWithLabel";
 import { IsAuthenticated } from "../../Authentication/useAuth";
+import { DISTRICT_ROLES, PHC_ALL_ROLES, PHC_ROLES, TALUK_ROLES } from "../../utilities/roles";
 
 export default function PhcoModal({
   show,
@@ -30,6 +31,9 @@ export default function PhcoModal({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if(!stateData?.PHCCode) {
+      alert("Your role is not assigned correctly. Please contact technical team.");
+    }
     const form = event.currentTarget;
     if (form.checkValidity() === true) {
       event.stopPropagation();
@@ -37,7 +41,7 @@ export default function PhcoModal({
           Name: stateData.Name,
           Mobile: stateData.Mobile,
           type: saveType,
-          Role: stateData?.Role,
+          Role: stateData?.Role || Role,
           PHCCode: stateData?.PHCCode,
           CreatedBy: loginRole,
           CreatedMobile: Mobile
@@ -58,16 +62,18 @@ export default function PhcoModal({
   }
 
   const renderRoles = () => {
-    if(loginRole === "CDPO"){
-      return ["SuperVisor"];
-    } else if(loginRole === "THO"){
-      return ["PHCO"];
-    } else if(loginRole === "AEO"){
-      return ["PDO"];
-    } else if(loginRole === "PD"){
-      return ["SuperVisor", "PHCO", "PDO"]
+    if(loginRole === DISTRICT_ROLES.WCD || loginRole === TALUK_ROLES.CDPO){
+      return [PHC_ROLES.SuperVisor];
+    } else if(loginRole === DISTRICT_ROLES.DHO || loginRole === TALUK_ROLES.THO){
+      return [PHC_ROLES.PHCO];
+    } else if(loginRole === DISTRICT_ROLES.RDPR || loginRole === TALUK_ROLES.EO){
+      return [PHC_ROLES.PDO];
+    } else if(loginRole === DISTRICT_ROLES.DUDC || loginRole === TALUK_ROLES.CMC_TMC_TPC){
+      return [PHC_ROLES.CAO_CO]
+    } else if(loginRole === DISTRICT_ROLES.BBMP || loginRole === TALUK_ROLES.ZON_IC){
+      return [PHC_ROLES.DIVISON_IN]
     } else {
-      return ["SuperVisor", "PHCO", "PDO"]
+      return PHC_ALL_ROLES;
     }
   };
 
@@ -88,21 +94,21 @@ export default function PhcoModal({
             <TextInputWithLabel
               controlId={"validationCustom02"}
               placeholder={"DistrictName"}
-              value={stateData?.DistrictName}
+              value={stateData?.DistrictName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
               <TextInputWithLabel
                 controlId={"validationCustom03"}
                 placeholder={"TalukOrTownName"}
-                value={stateData?.TalukOrTownName}
+                value={stateData?.TalukOrTownName || ""}
                 disabled={true}
                 onChange={handleInputChange}
               />
               <TextInputWithLabel
                 controlId={"validationCustom03"}
-                placeholder={"TalukOrTownName"}
-                value={stateData?.TalukOrTownName}
+                placeholder={"PHCName"}
+                value={stateData?.PHCName || ""}
                 disabled={true}
                 onChange={handleInputChange}
               />

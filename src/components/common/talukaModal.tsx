@@ -8,6 +8,8 @@ import TextInput from "./textInput";
 import TextInputWithLabel from "./textInputWithLabel";
 import SelectInputWithLabel from "./selectInputWithLabel";
 import { IsAuthenticated } from "../../Authentication/useAuth";
+import { DISTRICT_OPTIONS } from "../../utilities/constants";
+import { DISTRICT_ROLES, TALUK_ALL_ROLES, TALUK_ROLES } from "../../utilities/roles";
 
 export default function TalukModal({
   show,
@@ -43,7 +45,7 @@ export default function TalukModal({
           Name: stateData.Name,
           Mobile: stateData.Mobile,
           type: saveType,
-          Role: stateData?.Role,
+          Role: stateData?.Role || Role,
           DistrictCode: stateData?.DistrictCode,
           TalukOrTownCode: stateData?.TalukOrTownCode,
           CreatedBy: loginRole,
@@ -65,16 +67,18 @@ export default function TalukModal({
   }
 
   const renderRoles = () => {
-    if(loginRole === "WCDD-DD"){
-      return ["CDPO"];
-    } else if(loginRole === "DHO"){
-      return ["THO"];
-    } if(loginRole === "RDPR-DSO"){
-      return ["AEO"];
-    } if(loginRole === "DUDC"){
-      return ["PD"];
-    }  else {
-      return ["CDPO", "THO", "AEO","PD"];
+    if(loginRole === DISTRICT_ROLES.WCD){
+      return [TALUK_ROLES.CDPO];
+    } else if(loginRole === DISTRICT_ROLES.DHO){
+      return [TALUK_ROLES.THO];
+    } else if(loginRole === DISTRICT_ROLES.RDPR){
+      return [TALUK_ROLES.EO];
+    } else if(loginRole === DISTRICT_ROLES.DUDC){
+      return [TALUK_ROLES.CMC_TMC_TPC];
+    } else if(loginRole === DISTRICT_ROLES.BBMP){
+      return [TALUK_ROLES.ZON_IC];
+    } else {
+      return TALUK_ALL_ROLES;
     }
   };
 
@@ -95,14 +99,14 @@ export default function TalukModal({
             <TextInputWithLabel
               controlId={"validationCustom02"}
               placeholder={"DistrictName"}
-              value={stateData?.DistrictName}
+              value={stateData?.DistrictName || ""}
               disabled={true}
               onChange={handleInputChange}
             />
               <TextInputWithLabel
                 controlId={"validationCustom03"}
                 placeholder={"TalukOrTownName"}
-                value={stateData?.TalukOrTownName}
+                value={stateData?.TalukOrTownName || ""}
                 disabled={true}
                 onChange={handleInputChange}
               />
