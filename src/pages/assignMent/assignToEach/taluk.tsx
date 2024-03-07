@@ -129,7 +129,7 @@ export default function AssignToTaluk() {
   };
 
   const handleAssignSubCenter = async (values: IMasterData) => {
-    let res = await postRequest("addDistrictAndTalukUser", values);
+    let res = await postRequest("addOrUpdateAllLogin", values);
     if (res.code === 200) {
       setEditForm(false);
       await getAllMaster();

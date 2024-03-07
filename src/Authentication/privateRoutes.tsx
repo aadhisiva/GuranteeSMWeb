@@ -6,6 +6,7 @@ import {
   ASSIGNMENT_DASHBOARD,
   ASSIGN_TO_DISTRICT,
   ASSIGN_TO_MASTER,
+  ASSIGN_TO_MISSING_PHC,
   ASSIGN_TO_PHCO,
   ASSIGN_TO_SUBCENTER,
   ASSIGN_TO_TALUK,
@@ -68,6 +69,9 @@ const TalukWiseReportsComponent = React.lazy(
 const DistrictWiseReportsComponent = React.lazy(
   () => import("../pages/reports/districtWise")
 );
+const PhcoMissingComponent = React.lazy(
+  () => import("../pages/assignMent/assignToEach/phcMissing")
+);
 
 
 export const PageRoutes = () => {
@@ -93,6 +97,7 @@ export const PageRoutes = () => {
       <Route path={ASSIGN_TO_TALUK} element={<AssignTOTalukComponent />} />
       <Route path={ASSIGN_TO_PHCO} element={<AssignTOPhcoComponent />} />
       <Route path={ASSIGN_TO_SUBCENTER} element={<AssignTOSubCenterComponent />} />
+      <Route path={ASSIGN_TO_MISSING_PHC} element={<PhcoMissingComponent />} />
 
       <Route path={DISTRICT_WISE_REPORTS} element={<DistrictWiseReportsComponent />} />
       <Route path={TALUK_WISE_REPORTS} element={<TalukWiseReportsComponent />} />

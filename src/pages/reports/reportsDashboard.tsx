@@ -32,9 +32,9 @@ export default function ReportsDashboard() {
 
   const getAllMaster = async () => {
     setLoading(true);
-    let res = await postRequest("getEachSchemeCountForWebReports", {
+    let res = await postRequest("getEachSchemeCounts", {
       Role: Role,
-      DistrictCode: loginCode,
+      Code: loginCode,
     });
     // let res = { code: 200, data: [], response: {} };
     if (res?.code === 200) {

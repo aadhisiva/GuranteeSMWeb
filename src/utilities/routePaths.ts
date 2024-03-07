@@ -10,6 +10,7 @@ export const ASSIGN_TO_DISTRICT = "/AssignToDistrict";
 export const ASSIGN_TO_TALUK = "/AssignToTaluk";
 export const ASSIGN_TO_PHCO = "/AssignToPhco";
 export const ASSIGN_TO_SUBCENTER = "/AssignToSubCenter";
+export const ASSIGN_TO_MISSING_PHC = "/AssignToMissionPhc";
 
 
 export const REPORTS_DASHBOARD = "/Reports/ReportsDashBoard";

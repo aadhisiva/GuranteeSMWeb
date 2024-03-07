@@ -17,6 +17,28 @@ export default function TalukWiseReports() {
   const [itemsPerPage, setItemsPerPage] = useState(100);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [{ Role, loginCode }] = IsAuthenticated();
+  
+  const getAllMaster = async () => {
+    setLoading(true);
+    let res = await postRequest("getCountsOfDistrictAndTaluk", {
+      Role: Role,
+      DistrictCode: loginCode,
+    });
+    // let res = { code: 200, data: [], response: {} };
+    if (res?.code === 200) {
+      setOriginalData(res?.data || []);
+      setCopyOriginalData(res?.data || []);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      alert(res?.response?.data?.message || "Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    getAllMaster();
+  }, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -38,28 +60,6 @@ export default function TalukWiseReports() {
 
   const currentItems = filteredData.slice(startIndex, endIndex);
 
-  const [{ Role, loginCode }] = IsAuthenticated();
-
-  const getAllMaster = async () => {
-    setLoading(true);
-    let res = await postRequest("getCountsOfDistrictAndTaluk", {
-      Role: Role,
-      DistrictCode: loginCode,
-    });
-    // let res = { code: 200, data: [], response: {} };
-    if (res?.code === 200) {
-      setOriginalData(res?.data || []);
-      setCopyOriginalData(res?.data || []);
-      setLoading(false);
-    } else {
-      setLoading(false);
-      alert(res?.response?.data?.message || "Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    getAllMaster();
-  }, []);
 
   const onPageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {

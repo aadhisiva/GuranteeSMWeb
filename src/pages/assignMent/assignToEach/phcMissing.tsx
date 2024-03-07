@@ -11,8 +11,9 @@ import { IsAuthenticated } from "../../../Authentication/useAuth";
 import PhcoModal from "../../../components/common/phcoModal";
 import LoaderOverlay from "../../../components/common/LoadingOverlay";
 import { SearchBox } from "../../../components/common/searchBox";
+import PhcoModalMissing from "../../../components/common/phcoModalMissing";
 
-export default function PhcoAssign() {
+export default function PhcoM() {
   const [originalData, setOriginalData] = useState<IMasterData[]>([]);
   const [copyOfiginalData, setCopyOriginalData] = useState<IMasterData[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -28,10 +29,6 @@ export default function PhcoAssign() {
   const [districtSelect, setDistrictSelect] = useState<IMasterData[]>();
   const [talukaSelect, setTalukaSelect] = useState<IMasterData[]>();
   const [phcSelect, setPhcSelect] = useState<IMasterData[]>();
-  const [subCenterSelect, setSubCenterSelect] = useState<IMasterData[]>();
-
-  const [isError, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const [editForm, setEditForm] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -42,7 +39,6 @@ export default function PhcoAssign() {
 
   const totalPages = Math.ceil(copyOfiginalData.length / itemsPerPage);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showAssignMent, setAssignMent] = useState(true);
 
   const [{ Role, Mobile, loginCode }] = IsAuthenticated();
 
@@ -70,13 +66,10 @@ export default function PhcoAssign() {
   const currentItems = filteredData.slice(startIndex, endIndex);
 
   const getAllMaster = async () => {
-    // setLoading(true);
-    let res = await postRequest("getDisAndTalukAssignedData", {
-      allData: "PD",
-      role: Role,
-      code: loginCode,
-      isAssignMent: showAssignMent ? "assign" : "",
-      Mobile: Mobile,
+    setLoading(true);
+    let res = await postRequest("phcMissingData", {
+      Role: Role,
+      CreatedMobile: Mobile,
     });
     if (res?.code === 200) {
       setOriginalData(res?.data);
@@ -84,14 +77,13 @@ export default function PhcoAssign() {
       setLoading(false);
     } else {
       setLoading(false);
-      setError(true);
-      setErrorMessage("Something Went Wrong Please try again.");
+      alert(res?.response?.data?.message || "Please try again.");
     }
   };
 
   useEffect(() => {
     getAllMaster();
-  }, [showAssignMent]);
+  }, []);
 
   useEffect(() => {
     let filterData = originalData;
@@ -156,8 +148,8 @@ export default function PhcoAssign() {
     setModalTitle("Modify");
   };
 
-  const handleAssignSubCenter = async (values: IMasterData) => {
-    let res = await postRequest("addOrUpdateAllLogin", values);
+  const handleUpdatePhcMissing = async (values: IMasterData) => {
+    let res = await postRequest("updatePhcMissingData", values);
     if (res.code === 200) {
       setEditForm(false);
       await getAllMaster();
@@ -169,13 +161,13 @@ export default function PhcoAssign() {
 
   const rednerForm = () => {
     return (
-      <PhcoModal
+      <PhcoModalMissing
         show={editForm}
         title={modalTitle}
         saveType={"PO"}
         formData={formData}
-        handleSubmitForm={handleAssignSubCenter}
-        handleModifyAssignedUser={handleAssignSubCenter}
+        handleSubmitForm={handleUpdatePhcMissing}
+        handleModifyAssignedUser={handleUpdatePhcMissing}
         onHide={() => setEditForm(false)}
       />
     );
@@ -193,28 +185,6 @@ export default function PhcoAssign() {
     <>
       {editForm && rednerForm()}
       <Titlebar title={"PHCO Assignment"} />
-      <Row className="p-4">
-        <Col md={6} className="text-right">
-          <span
-            onClick={() => setAssignMent(true)}
-            className={`border p-3 rounded-xl ${
-              showAssignMent ? "bg-yellow-600" : "bg-blue-500"
-            } text-white`}
-          >
-            AssignMent
-          </span>
-        </Col>
-        <Col md={6}>
-          <span
-            onClick={() => setAssignMent(false)}
-            className={`border p-3 rounded-xl ${
-              !showAssignMent ? "bg-yellow-600" : "bg-blue-500"
-            } text-white`}
-          >
-            Assigned Data
-          </span>
-        </Col>
-      </Row>
       <Row className="border p-3 rounded-xl m-4">
         <Col>
           <SelectInput
@@ -267,35 +237,6 @@ export default function PhcoAssign() {
           {/* Replace the GridView with a React-based table */}
           {originalData.length !== 0 ? (
             <React.Fragment>
-              {showAssignMent ? (
-                <Table responsive bordered>
-                  <thead>
-                    <tr>
-                      <th>DistrictName</th>
-                      <th>TalukOrTownName/Zone</th>
-                      <th>PHCName/Division</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(currentItems || []).map((obj: any, index) => (
-                      <tr key={index}>
-                        <td>{obj?.DistrictName ?? "N/A"}</td>
-                        <td>{obj?.TalukOrTownName ?? "N/A"}</td>
-                        <td>{obj?.PHCName ?? "N/A"}</td>
-                        <td>
-                          <Button
-                            variant="primary"
-                            onClick={() => handleCLickAdd(obj)}
-                          >
-                            Add
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              ) : (
                 <Table responsive bordered>
                   <thead>
                     <tr>
@@ -333,7 +274,6 @@ export default function PhcoAssign() {
                     ))}
                   </tbody>
                 </Table>
-              )}
               <CustomPagination
                 currentCount={currentItems.length|| 0}
                 totalCount={copyOfiginalData.length || 0}

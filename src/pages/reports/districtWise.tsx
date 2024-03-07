@@ -40,12 +40,12 @@ export default function DistrictWiseReports() {
   const [{ Role, loginCode }] = IsAuthenticated();
 
   const getAllMaster = async () => {
+    try {
     setLoading(true);
     let res = await postRequest("getCountsOfDistrictAndTaluk", {
       Role: Role,
       DistrictCode: loginCode,
     });
-    // let res = { code: 200, data: [], response: {} };
     if (res?.code === 200) {
       setOriginalData(res?.data || []);
       setCopyOriginalData(res?.data || []);
@@ -54,10 +54,13 @@ export default function DistrictWiseReports() {
       setLoading(false);
       alert(res?.response?.data?.message || "Please try again.");
     }
+  } catch (error: any) {
+    return error?.message;
+  }
   };
 
   useEffect(() => {
-    getAllMaster();
+      getAllMaster();
   }, []);
 
   const onPageChange = (page: number) => {

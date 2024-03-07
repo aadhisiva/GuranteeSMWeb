@@ -37,6 +37,7 @@ export default function DistrictModal({
           Mobile: stateData.Mobile,
           type: saveType,
           Role: stateData?.Role || Role,
+          id: stateData?.id,
           DistrictCode: stateData?.DistrictCode,
           CreatedBy: loginRole,
           CreatedMobile: Mobile

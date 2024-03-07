@@ -19,8 +19,8 @@ module.exports = {
   mode: "development", //production
   entry: path.join(__dirname, "src", "index.tsx"),
   output: {
-    publicPath: "/GuaranteeSWeb/",
-    // publicPath: "/",
+    // publicPath: "/GuaranteeSWeb/",
+    publicPath: "/",
     path: path.resolve(__dirname, "build"),
   },
   resolve: {

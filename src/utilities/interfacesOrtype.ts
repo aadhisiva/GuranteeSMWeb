@@ -37,6 +37,7 @@ export interface IMasterData {
     Name?:string; 
     Role?:string; 
     Mobile?:string;
+    PHCCode?:string;
     CreatedBy?: string;
     CreatedMobile?: string; 
 }

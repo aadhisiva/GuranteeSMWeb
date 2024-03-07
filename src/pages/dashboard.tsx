@@ -7,6 +7,7 @@ import {
   ASSIGNMENT_DASHBOARD,
   ASSIGN_TO_DISTRICT,
   ASSIGN_TO_MASTER,
+  ASSIGN_TO_MISSING_PHC,
   ASSIGN_TO_PHCO,
   ASSIGN_TO_SUBCENTER,
   ASSIGN_TO_TALUK,
@@ -33,7 +34,7 @@ export default function Dashboard() {
     setLoading(true);
     let res = await postRequest("getDashBoardCounts", {
       Role: Role,
-      DistrictCode: loginCode,
+      Code: loginCode,
     });
     if (res?.code === 200) {
       setOriginalData(res?.data || []);
@@ -137,6 +138,14 @@ export default function Dashboard() {
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
               <div
+                onClick={() => navigate(ASSIGN_TO_MISSING_PHC)}
+                className="h-40 border rounded-xl bg-[#173517]  flex items-center justify-center"
+              >
+                <span className="text-center text-white text-xl">Update PHCO Code</span>
+              </div>
+            </Col>
+            <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
+              <div
                 onClick={() => navigate(ASSIGN_TO_SUBCENTER)}
                 className="h-40 border rounded-xl bg-[#6ec93d]  flex items-center justify-center"
               >
@@ -168,6 +177,14 @@ export default function Dashboard() {
             </Col>
             <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
               <div
+                onClick={() => navigate(ASSIGN_TO_MISSING_PHC)}
+                className="h-40 border rounded-xl bg-[#173517]  flex items-center justify-center"
+              >
+                <span className="text-center text-white text-xl">Update PHCO Code</span>
+              </div>
+            </Col>
+            <Col xs={6} md={2} sm={5} className="m-2 cursor-pointer">
+              <div
                 onClick={() => navigate(ASSIGN_TO_SUBCENTER)}
                 className="h-40 border rounded-xl bg-[#4ab8ef]  flex items-center justify-center"
               >
@@ -187,6 +204,14 @@ export default function Dashboard() {
                 className="h-40 border rounded-xl bg-[#ae3492]  flex items-center justify-center"
               >
                 <span className="text-center text-white text-xl">PHCO/Division</span>
+              </div>
+            </Col>
+            <Col xs={6} md={3} sm={5} className="m-2 cursor-pointer">
+              <div
+                onClick={() => navigate(ASSIGN_TO_MISSING_PHC)}
+                className="h-40 border rounded-xl bg-[#173517]  flex items-center justify-center"
+              >
+                <span className="text-center text-white text-xl">Update PHCO Code</span>
               </div>
             </Col>
             <Col xs={6} md={3} sm={5} className="m-2 cursor-pointer">
