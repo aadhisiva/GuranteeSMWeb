@@ -70,7 +70,7 @@ export default function ModalFormEdit({
     } else if(loginRole === DISTRICT_ROLES.RDPR || loginRole === TALUK_ROLES.EO || loginRole === PHC_ROLES.PDO){
       return [{role:"GP Assistant", value: "GP Assistant"}];
     } else if(loginRole === DISTRICT_ROLES.DUDC || loginRole === TALUK_ROLES.CMC_TMC_TPC || loginRole === PHC_ROLES.CAO_CO){
-      return [{role:"CTC Assistant", value: "CTC Assistant"}];
+      return [{role:"CTP Assistant", value: "CTP Assistant"}];
     } else if(loginRole === DISTRICT_ROLES.BBMP || loginRole === TALUK_ROLES.ZON_IC || loginRole === PHC_ROLES.DIVISON_IN){
       return [{role:"Urban Surveyor", value: "Urban Surveyor"}];
     } else {
@@ -81,7 +81,7 @@ export default function ModalFormEdit({
             {role: "Asha Worker", value:"Asha Worker"}, 
             {role:"Urban Surveyor", value: "Urban Surveyor"},
             {role:"GP Assistant", value: "GP Assistant"},
-            {role:"CTC Assistant", value: "CTC Assistant"},
+            {role:"CTP Assistant", value: "CTP Assistant"},
             {role: "AWW", valule: "AWW"},
           ]
     }

@@ -19,8 +19,9 @@ module.exports = {
   mode: "development", //production
   entry: path.join(__dirname, "src", "index.tsx"),
   output: {
-    // publicPath: "/GuaranteeSWeb/",
-    publicPath: "/",
+    publicPath: "/GuaranteeSWeb/",
+    // publicPath: "/",
+    filename: 'widget.[contenthash].js',
     path: path.resolve(__dirname, "build"),
   },
   resolve: {
@@ -33,6 +34,7 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "index.html"),
+      title: 'Caching'
     }),
   ],
   devServer: {

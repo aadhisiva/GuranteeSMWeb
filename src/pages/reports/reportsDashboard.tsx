@@ -16,6 +16,7 @@ import { postRequest } from "../../Authentication/axiosrequest";
 import { IReportsDashBoard } from "../../utilities/interfacesOrtype";
 import { numberWithCommas } from "../../utilities/resusedFunction";
 import LoaderOverlay from "../../components/common/LoadingOverlay";
+import { ROLES } from "../../utilities/constants";
 
 export default function ReportsDashboard() {
   const [originalData, setOriginalData] = useState<IReportsDashBoard[] | []>(
@@ -36,7 +37,6 @@ export default function ReportsDashboard() {
       Role: Role,
       Code: loginCode,
     });
-    // let res = { code: 200, data: [], response: {} };
     if (res?.code === 200) {
       setOriginalData(res?.data || []);
       setCopyOriginalData(res?.data || []);
@@ -51,6 +51,8 @@ export default function ReportsDashboard() {
     getAllMaster();
   }, []);
 
+  const roleWise = Role === 'Super Admin' || Role === ROLES.DISTRICT_OFFICER;
+
   return (
     <div>
       <Titlebar title={"Reports Dashboard"} />
@@ -58,7 +60,7 @@ export default function ReportsDashboard() {
       <Row className="flex justify-center items-center mt-3">
         <Col xs={6} md={2} sm={5} className="m-2 flex flex-col justify-center">
           <div
-            onClick={() => navigate(GRUHALASHMI_REPORTS)}
+            onClick={() => navigate(roleWise? GRUHALASHMI_REPORTS : "#")}
             className="h-40 border rounded-xl bg-[#d6a03c] flex flex-col justify-center items-center"
           >
             <div className="text-xl text-center">
@@ -70,7 +72,7 @@ export default function ReportsDashboard() {
         </Col>
         <Col xs={6} md={2} sm={5} className="m-2 flex flex-col justify-center">
           <div
-            onClick={() => navigate(GRUHAJYOTHI_REPORTS)}
+            onClick={() => navigate(roleWise? GRUHAJYOTHI_REPORTS : "#")}
             className="h-40 border rounded-xl bg-[#41e9d2] flex items-center justify-center"
           >
             <div className="text-xl text-center">
@@ -82,7 +84,7 @@ export default function ReportsDashboard() {
         </Col>
         <Col xs={6} md={2} sm={5} className="m-2 flex flex-col justify-center">
           <div
-            onClick={() => navigate(ANNABHAGYA_REPORTS)}
+            onClick={() => navigate(roleWise? ANNABHAGYA_REPORTS: "#")}
             className="h-40 border rounded-xl bg-[#3a55c2] flex flex-col items-center justify-center"
           >
             <div className="text-xl text-center">
@@ -94,7 +96,7 @@ export default function ReportsDashboard() {
         </Col>
         <Col xs={6} md={2} sm={5} className="m-2 flex flex-col justify-center">
           <div
-            onClick={() => navigate(SHAKTI_REPORTS)}
+            onClick={() => navigate(roleWise? SHAKTI_REPORTS: "#")}
             className="h-40 border rounded-xl bg-[#d653d4] flex flex-col items-center justify-center"
           >
             <div className="text-xl text-center">
@@ -106,7 +108,7 @@ export default function ReportsDashboard() {
         </Col>
         <Col xs={6} md={2} sm={5} className="m-2 flex flex-col justify-center">
           <div
-            onClick={() => navigate(YUVANIDHI_REPORTS)}
+            onClick={() => navigate(roleWise? YUVANIDHI_REPORTS: "#")}
             className="h-40 border rounded-xl bg-[#c63d4d] flex flex-col items-center justify-center"
           >
             <div className="text-xl text-center">
