@@ -2,11 +2,20 @@ import axios, { AxiosRequestConfig } from "axios";
 // const BaseUrl = "https://sevasindhugs1.karnataka.gov.in/MysoreTicket/admin/";
 // const BaseUrl = "http://103.138.197.190/GuranteeScheme/admin/";
 const BaseUrl = "https://gss.karnataka.gov.in/GuranteeScheme/admin/";
+const BaseURlForUser = "https://gss.karnataka.gov.in/GuranteeScheme/user/";
 // const BaseUrl = "http://localhost:8886/GuranteeScheme/admin/";
 
 export const postRequest = async (url: string, body: any) => {
     try {
         let getData = await axios.post(BaseUrl + url, body);
+        return getData.data;
+    } catch (e) {
+        return e;
+    }
+};
+export const postRequestWithHeaders = async (url: string, body: any, headers: any) => {
+    try {
+        let getData = await axios.post(BaseURlForUser + url, body, {headers: headers});
         return getData.data;
     } catch (e) {
         return e;

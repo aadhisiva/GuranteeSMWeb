@@ -54,4 +54,44 @@ export const DISTRICT_OPTIONS = [
 "Kodagu",
 "Ballari",
 "Haveri",
-]
+"BBMP"
+];
+export const DISTRICT_OPTIONS_WITH_CODES = [
+    {code:"2", value: "Bagalkot"},
+    {code:"12", value: "Ballari"},
+    {code:"1", value: "Belagavi"},
+    {code:"21", value: "Bengaluru (Rural)"},
+    {code:"20", value: "Bengaluru (Urban)"},
+    {code:"5", value: "Bidar"},
+    {code:"27", value: "Chamarajanagara"},
+    {code:"28", value: "Chikkaballapura"},
+    {code:"17", value: "Chikkamagaluru"},
+    {code:"13", value: "Chitradurga"},
+    {code:"24", value: "Dakshina Kannada"},
+    {code:"14", value: "Davanagere"},
+    {code:"9", value: "Dharwad"},
+    {code:"8", value: "Gadag"},
+    {code:"23", value: "Hassan"},
+    {code:"11", value: "Haveri"},
+    {code:"4", value: "Kalburgi"},
+    {code:"25", value: "Kodagu"},
+    {code:"19", value: "Kolara"},
+    {code:"7", value: "Koppal"},
+    {code:"22", value: "Mandya"},
+    {code:"26", value: "Mysuru"},
+    {code:"6", value: "Raichur"},
+    {code:"29", value: "Ramanagara"},
+    {code:"15", value: "Shivamogga"},
+    {code:"18", value: "Tumakuru"},
+    {code:"16", value: "Udupi"},
+    {code:"10", value: "Uttara Kannada"},
+    {code:"31", value: "Vijayanagara"},
+    {code:"3", value: "Vijayapura"},
+    {code:"30", value: "Yadgir"},
+    {code:"BBMP_1", value: "BBMP"},
+];
+
+
+export const TALUK = 'Taluk';
+export const PHC = 'Phc';
+export const SUBCENTER = 'SubCenter';

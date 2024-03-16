@@ -25,14 +25,10 @@ export default function SubCenterAssign() {
   const [subCenter, setSubCenter] = useState("");
 
   // selectable values
-  const [ruralUrbanSelect, setRuralUrbanSelect] = useState<IMasterData[]>();
   const [districtSelect, setDistrictSelect] = useState<IMasterData[]>();
   const [talukaSelect, setTalukaSelect] = useState<IMasterData[]>();
   const [phcSelect, setPhcSelect] = useState<IMasterData[]>();
   const [subCenterSelect, setSubCenterSelect] = useState<IMasterData[]>();
-
-  const [isError, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const [editForm, setEditForm] = useState(false);
   const [formData, setFormData] = useState<IMasterData>();
@@ -89,8 +85,7 @@ export default function SubCenterAssign() {
       setCopyOriginalData(res?.data);
       setLoading(false);
     } else {
-      setError(true);
-      setErrorMessage(res?.response?.data?.message || "Please try again.");
+      alert(res?.response?.data?.message || "Please try again.");
     }
   };
 
@@ -98,47 +93,50 @@ export default function SubCenterAssign() {
     getAllMaster();
   }, [showAssignMent]);
 
+
   useEffect(() => {
     let filterData = originalData;
-    // filter rural/urban
+   // filter rural/urban
     if (ruralUrban) {
-      filterData = filterData.filter((obj) => obj.Type === ruralUrban);
+      filterData = filterData.filter((obj) => (obj.Type === ruralUrban || obj.Type == null));
     }
+
     // filter rural/urban and district
     if (ruralUrban && district) {
       filterData = filterData.filter(
-        (obj) => obj.Type === ruralUrban && obj.DistrictName === district
+        (obj) =>  (obj.Type === ruralUrban || obj.Type == null) && 
+        obj?.DistrictName?.toLowerCase() === district.toLowerCase()
       );
     }
     // filter rural/urban and district and taluka
     if (ruralUrban && district && taluka) {
       filterData = filterData.filter(
         (obj) =>
-          obj.Type === ruralUrban &&
-          obj.DistrictName === district &&
-          obj.TalukOrTownName === taluka
+        (obj.Type === ruralUrban || obj.Type == null) &&
+          obj.DistrictName?.toLowerCase() === district.toLowerCase() &&
+          obj?.TalukOrTownName?.toLowerCase() === taluka.toLowerCase()
       );
     }
     // filter rural/urban and district and taluka and phco(health facility)
     if (ruralUrban && district && taluka && phc) {
       filterData = filterData.filter(
         (obj) =>
-          obj.Type === ruralUrban &&
-          obj.DistrictName === district &&
-          obj.TalukOrTownName === taluka &&
-          obj.PHCName === phc
+          (obj.Type === ruralUrban || obj.Type == null) &&
+          obj?.DistrictName?.toLowerCase() === district.toLowerCase() &&
+          obj?.TalukOrTownName?.toLowerCase() === taluka.toLowerCase() &&
+          obj?.PHCName?.toLowerCase() === phc.toLowerCase()
       );
     }
     // filter rural/urban and district and taluka and sub centre
     if (ruralUrban && district && taluka && subCenter) {
       filterData = filterData.filter(
         (obj) =>
-          obj.Type === ruralUrban &&
-          obj.DistrictName === district &&
-          obj.TalukOrTownName === taluka &&
-          obj.SubCenterName === subCenter
+          (obj.Type === ruralUrban || obj.Type == null) &&
+          obj?.DistrictName?.toLowerCase() === district.toLowerCase() &&
+          obj?.TalukOrTownName?.toLowerCase() === taluka.toLowerCase() &&
+          obj?.SubCenterName?.toLowerCase() === subCenter.toLowerCase()
       );
-    }
+    };
     setCopyOriginalData(filterData);
   }, [ruralUrban, district, taluka, subCenter, phc]);
 
@@ -160,7 +158,7 @@ export default function SubCenterAssign() {
     setPhc("");
     setSubCenter("");
     let reset = (districtSelect || []).filter(
-      (obj) => obj.DistrictName === value
+      (obj) => (obj?.DistrictName === value || obj.Type == null)
     );
     setTalukaSelect(reset);
   };
@@ -170,7 +168,7 @@ export default function SubCenterAssign() {
     setPhc("");
     setSubCenter("");
     let reset = (talukaSelect || []).filter(
-      (obj) => obj.TalukOrTownName === value
+      (obj) => obj?.TalukOrTownName === value || obj.Type == null
     );
     setPhcSelect(reset);
   };
@@ -178,7 +176,7 @@ export default function SubCenterAssign() {
     const { value } = e.target;
     setPhc(value);
     setSubCenter("");
-    let reset = (phcSelect || []).filter((obj) => obj.PHCName === value);
+    let reset = (phcSelect || []).filter((obj) => obj?.PHCName === value || obj.Type == null);
     setSubCenterSelect(reset);
   };
   const handleSubCentre = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -336,8 +334,8 @@ export default function SubCenterAssign() {
                         <th>Type</th>
                         <th>DistrictName</th>
                         <th>TalukOrTownName/Zone</th>
-                    <th>PHCName/Division</th>
-                    <th>SubCenterName/Ward</th>
+                      <th>PHCName/Division</th>
+                      <th>SubCenterName/Ward</th>
                         <th>Action</th>
                       </tr>
                     </thead>

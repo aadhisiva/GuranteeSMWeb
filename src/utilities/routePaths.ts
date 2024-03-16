@@ -12,6 +12,8 @@ export const ASSIGN_TO_PHCO = "/AssignToPhco";
 export const ASSIGN_TO_SUBCENTER = "/AssignToSubCenter";
 export const ASSIGN_TO_MISSING_PHC = "/AssignToMissionPhc";
 
+export const SHAKTHI_SCHEME_SURVEY = "/ShakthiSchemeSurvey";
+
 
 export const REPORTS_DASHBOARD = "/Reports/ReportsDashBoard";
 export const GRUHALASHMI_REPORTS = "/GurhaLaksmiReports";

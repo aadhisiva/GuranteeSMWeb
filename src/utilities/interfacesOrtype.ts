@@ -40,6 +40,9 @@ export interface IMasterData {
     PHCCode?:string;
     CreatedBy?: string;
     CreatedMobile?: string; 
+    SurveyedName?: string; 
+    SurveyedMobile?: string; 
+    SurveyedRole?: string; 
 }
 export interface IModalFromEdit {
     title?: string;

@@ -4,6 +4,7 @@ import { persistor, store } from "./redux/store";
 import WebRoutes from "./Authentication/webRoutes";
 import { useEffect } from "react";
 
+
 function App() {
   useEffect(() => {
     // Function to delete our give cache
@@ -12,6 +13,7 @@ function App() {
         caches.delete(name);
       });
     });
+    
   }, [])
   return (
     <Provider store={store}>
